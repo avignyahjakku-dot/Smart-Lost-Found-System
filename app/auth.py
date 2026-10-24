@@ -4,11 +4,14 @@ Authentication Blueprint
 Handles user registration, login, logout, password hashing, and session management.
 """
 
+import re
+import logging
 from functools import wraps
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from .db import query_db, execute_db
 
+logger = logging.getLogger('campusfind.auth')
 auth_bp = Blueprint('auth', __name__)
 
 def login_required(f):
@@ -49,13 +52,25 @@ def register():
         confirm_password = request.form.get('confirm_password', '')
         role = request.form.get('role', 'student').strip().lower()
 
-        # Input Validation
+        # Input Validation & Length Bounds
         if not full_name or not email or not password:
             flash("Please fill in all required fields (Name, Email, Password).", "danger")
             return render_template('auth/register.html')
 
-        if len(password) < 6:
-            flash("Password must be at least 6 characters long.", "danger")
+        if len(full_name) > 100:
+            flash("Full name cannot exceed 100 characters.", "danger")
+            return render_template('auth/register.html')
+
+        if len(email) > 100 or '@' not in email:
+            flash("Please provide a valid campus email address.", "danger")
+            return render_template('auth/register.html')
+
+        if len(password) < 8:
+            flash("Password must be at least 8 characters long.", "danger")
+            return render_template('auth/register.html')
+
+        if len(password) > 128:
+            flash("Password cannot exceed 128 characters.", "danger")
             return render_template('auth/register.html')
 
         if password != confirm_password:
@@ -78,11 +93,13 @@ def register():
             user_id = execute_db(
                 "INSERT INTO users (full_name, email, student_id, phone, password_hash, role) "
                 "VALUES (%s, %s, %s, %s, %s, %s)",
-                (full_name, email, student_id, phone, hashed_password, role),
+                (full_name, email, student_id[:30], phone[:20], hashed_password, role),
                 return_id=True
             )
 
-            # Auto-login after registration
+            # Auto-login after registration with permanent session
+            session.clear()
+            session.permanent = True
             session['user_id'] = user_id
             session['user_name'] = full_name
             session['user_email'] = email
@@ -91,7 +108,8 @@ def register():
             flash(f"Welcome to CampusFind, {full_name}! Your account has been created.", "success")
             return redirect(url_for('items.browse'))
         except Exception as e:
-            flash(f"Error creating account: {str(e)}", "danger")
+            logger.error("Failed to create user account for %s: %s", email, str(e))
+            flash("Unable to complete registration. Please verify your details or contact an administrator.", "danger")
 
     return render_template('auth/register.html')
 
@@ -115,6 +133,7 @@ def login():
 
         if user and check_password_hash(user['password_hash'], password):
             session.clear()
+            session.permanent = True  # Enforces PERMANENT_SESSION_LIFETIME
             session['user_id'] = user['id']
             session['user_name'] = user['full_name']
             session['user_email'] = user['email']

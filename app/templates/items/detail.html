@@ -7,9 +7,9 @@
     <a href="{{ url_for('items.browse') }}" style="color: var(--secondary); font-size: 0.9rem;">&larr; Back to Catalog</a>
 </div>
 
-<div class="grid grid-3" style="gap: 1.5rem; align-items: start;">
+<div class="grid grid-3 detail-layout" style="gap: 1.5rem; align-items: start;">
     <!-- Left Column: Item Image & Visuals -->
-    <div style="grid-column: span 1;">
+    <div class="detail-sidebar" style="grid-column: span 1;">
         <div class="card" style="overflow: hidden;">
             <div style="height: 280px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; position: relative;">
                 {% if item.image_filename %}
@@ -38,7 +38,7 @@
                 <div style="background: #f8fafc; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.82rem;">
                     <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.35rem;">🌳 In-Memory BST Lookup:</div>
                     <div>Item Key: <strong>#{{ item.id }}</strong></div>
-                    <div>Path Visited: <code>{{ bst_insight.path | join(' &rarr; ') | safe }}</code></div>
+                    <div>Path Visited: <code>{{ bst_insight.path | join(' → ') }}</code></div>
                     <div>Comparisons: <strong>{{ bst_insight.comparisons }}</strong> (Height: {{ bst_insight.tree_height }})</div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
     </div>
 
     <!-- Right Column: Item Information & Smart Matching -->
-    <div style="grid-column: span 2;">
+    <div class="detail-main" style="grid-column: span 2;">
         <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-header">
                 <div>
@@ -115,6 +115,7 @@
 
                     {% if current_user.is_authenticated and (current_user.id == item.user_id or current_user.is_admin) %}
                         <form action="{{ url_for('items.update_status', item_id=item.id) }}" method="POST" style="display: flex; gap: 0.5rem; align-items: center; margin-left: auto;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <label style="font-size: 0.85rem; font-weight: 600; color: var(--secondary);">Update Status:</label>
                             <select name="status" class="form-control" style="width: auto; padding: 0.35rem 0.6rem;">
                                 <option value="open" {% if item.status == 'open' %}selected{% endif %}>Open</option>
@@ -183,32 +184,34 @@
 </div>
 
 <!-- Claim Submission Modal -->
-<div id="claimModal" class="modal-overlay">
+<div id="claimModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="claimModalTitle">
     <div class="modal-dialog">
         <div class="card-header">
-            <h3 class="card-title">Submit Ownership Claim</h3>
-            <button type="button" class="flash-close" onclick="closeModal('claimModal')">&times;</button>
+            <h3 class="card-title" id="claimModalTitle">Submit Ownership Claim</h3>
+            <button type="button" class="flash-close" aria-label="Close ownership claim modal" onclick="closeModal('claimModal')">&times;</button>
         </div>
         <form action="{{ url_for('claims.submit_claim', item_id=item.id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="card-body">
                 <p style="font-size: 0.88rem; color: var(--secondary); margin-bottom: 1rem;">
                     Campus administrators will review your evidence before authorizing collection.
                 </p>
 
                 <div class="form-group">
-                    <label class="form-label" for="contact_phone">Contact Phone Number <span class="required">*</span></label>
+                    <label class="form-label" for="contact_phone">Contact Phone Number <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <input type="tel" id="contact_phone" name="contact_phone" class="form-control" placeholder="e.g. +91 9876543210" required>
+                    <div class="form-hint">Used by campus staff to contact you once approved.</div>
                 </div>
 
                 {% if item.secret_hint %}
                     <div class="form-group" style="background: #fffbeb; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid #fef3c7;">
-                        <label class="form-label" for="secret_answer">Answer to Verification Question: "{{ item.secret_hint }}" <span class="required">*</span></label>
+                        <label class="form-label" for="secret_answer">Answer to Verification Question: "{{ item.secret_hint }}" <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <input type="text" id="secret_answer" name="secret_answer" class="form-control" placeholder="Enter your secret answer" required>
                     </div>
                 {% endif %}
 
                 <div class="form-group">
-                    <label class="form-label" for="proof_details">Proof of Ownership / Distinguishing Marks <span class="required">*</span></label>
+                    <label class="form-label" for="proof_details">Proof of Ownership / Distinguishing Marks <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <textarea id="proof_details" name="proof_details" class="form-control" rows="4" placeholder="Detail serial numbers, stickers, specific wallpapers, invoice details, or contents..." required></textarea>
                 </div>
             </div>

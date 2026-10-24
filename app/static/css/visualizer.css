@@ -31,9 +31,9 @@
 
 /* SVG Elements */
 .bst-branch {
-  stroke: #cbd5e1;
+  stroke: #94a3b8;
   stroke-width: 2.5;
-  transition: stroke 0.3s ease;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
 }
 
 .bst-branch.branch-active {
@@ -47,7 +47,16 @@
 }
 
 .bst-node:hover {
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.18));
+}
+
+.bst-node:focus {
+  outline: none;
+}
+
+.bst-node:focus .node-circle {
+  stroke: #ea580c;
+  stroke-width: 3.5;
 }
 
 .node-circle {
@@ -61,7 +70,7 @@
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 700;
-  fill: #1e293b;
+  fill: #0f172a;
   text-anchor: middle;
   dominant-baseline: central;
   user-select: none;
@@ -70,7 +79,7 @@
 .node-label {
   font-family: var(--font-sans);
   font-size: 10px;
-  fill: #64748b;
+  fill: #475569;
   text-anchor: middle;
 }
 
@@ -145,4 +154,23 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--secondary);
+}
+
+@media (max-width: 768px) {
+  .canvas-wrapper {
+    min-height: 380px;
+  }
+  #bst-svg {
+    height: 420px;
+  }
+  .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .controls-row > div {
+    width: 100% !important;
+  }
+  .controls-row .btn {
+    flex: 1;
+  }
 }

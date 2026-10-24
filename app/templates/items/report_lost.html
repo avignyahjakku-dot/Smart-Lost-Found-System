@@ -17,15 +17,16 @@
 
         <div class="card-body">
             <form action="{{ url_for('items.report_lost') }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
-                    <label class="form-label" for="title">Item Title / Name <span class="required">*</span></label>
+                    <label class="form-label" for="title">Item Title / Name <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Dell Inspiron 15 Laptop (Silver)" required autofocus>
                     <div class="form-hint">Include brand, model, and primary color for best matching accuracy.</div>
                 </div>
 
                 <div class="grid grid-2" style="gap: 1rem;">
                     <div class="form-group">
-                        <label class="form-label" for="category">Category <span class="required">*</span></label>
+                        <label class="form-label" for="category">Category <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <select id="category" name="category" class="form-control" required>
                             <option value="">Select Category...</option>
                             {% for cat in categories %}
@@ -35,7 +36,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="location">Last Seen Location <span class="required">*</span></label>
+                        <label class="form-label" for="location">Last Seen Location <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <select id="location" name="location" class="form-control" required>
                             <option value="">Select Campus Location...</option>
                             {% for loc in locations %}
@@ -47,19 +48,21 @@
 
                 <div class="grid grid-2" style="gap: 1rem;">
                     <div class="form-group">
-                        <label class="form-label" for="item_date">Date Lost <span class="required">*</span></label>
+                        <label class="form-label" for="item_date">Date Lost <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <input type="date" id="item_date" name="item_date" class="form-control" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="image">Optional Photo / Reference Image</label>
-                        <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                        <input type="file" id="image" name="image" class="form-control" accept="image/png, image/jpeg, image/gif, image/webp">
+                        <div class="form-hint">PNG, JPG, GIF, or WEBP (up to 5MB).</div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="description">Detailed Description <span class="required">*</span></label>
+                    <label class="form-label" for="description">Detailed Description <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <textarea id="description" name="description" class="form-control" rows="4" placeholder="Mention distinctive marks, scratches, stickers, case color, or contents inside..." required></textarea>
+                    <div class="form-hint">Detailed descriptions increase candidate match probability.</div>
                 </div>
 
                 <div class="form-group" style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">

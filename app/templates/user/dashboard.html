@@ -64,8 +64,11 @@
                 </table>
             </div>
         {% else %}
-            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                You haven't submitted any ownership claims yet.
+            <div style="text-align: center; padding: 2.5rem 1.5rem; color: var(--text-muted);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">✋</div>
+                <p style="font-weight: 600; margin-bottom: 0.25rem; color: var(--dark);">No Active Ownership Claims</p>
+                <p style="font-size: 0.88rem; margin-bottom: 1rem;">When you submit a claim on a found item, its review status and administrator remarks will appear here.</p>
+                <a href="{{ url_for('items.browse', type='found') }}" class="btn btn-sm btn-secondary">Browse Found Items to Claim &rarr;</a>
             </div>
         {% endif %}
     </div>
@@ -112,8 +115,11 @@
                 </table>
             </div>
         {% else %}
-            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                You have not reported any lost items.
+            <div style="text-align: center; padding: 2.5rem 1.5rem; color: var(--text-muted);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🔍</div>
+                <p style="font-weight: 600; margin-bottom: 0.25rem; color: var(--dark);">No Lost Items Reported</p>
+                <p style="font-size: 0.88rem; margin-bottom: 1rem;">Have you misplaced a laptop, calculator, ID card, or keys on campus?</p>
+                <a href="{{ url_for('items.report_lost') }}" class="btn btn-sm btn-danger">+ Report Lost Item</a>
             </div>
         {% endif %}
     </div>
@@ -160,8 +166,11 @@
                 </table>
             </div>
         {% else %}
-            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                You have not logged any found items.
+            <div style="text-align: center; padding: 2.5rem 1.5rem; color: var(--text-muted);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🎁</div>
+                <p style="font-weight: 600; margin-bottom: 0.25rem; color: var(--dark);">No Found Items Logged</p>
+                <p style="font-size: 0.88rem; margin-bottom: 1rem;">Found an item in a classroom, library, or food court? Log it to help reunite it with its owner.</p>
+                <a href="{{ url_for('items.report_found') }}" class="btn btn-sm btn-success">+ Report Found Item</a>
             </div>
         {% endif %}
     </div>

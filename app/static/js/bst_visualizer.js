@@ -63,6 +63,10 @@ class BSTVisualizer {
         this.nodeCoordinates.clear();
         if (!root) return;
 
+        // Adapt node dimensions based on available viewport width
+        this.nodeRadius = svgWidth < 600 ? 18 : 22;
+        this.levelHeight = svgWidth < 600 ? 60 : 70;
+
         // 1. Assign in-order indices for non-overlapping X
         let inorderIndex = 0;
         const assignInorder = (node, depth) => {
@@ -75,7 +79,7 @@ class BSTVisualizer {
         assignInorder(root, 0);
 
         const totalNodes = Math.max(1, inorderIndex);
-        const marginX = 40;
+        const marginX = svgWidth < 600 ? 25 : 40;
         const usableWidth = svgWidth - (marginX * 2);
         const xStep = usableWidth / (totalNodes + 1);
 
@@ -154,6 +158,9 @@ class BSTVisualizer {
         g.setAttribute('class', 'bst-node');
         g.setAttribute('id', `node-g-${key}`);
         g.setAttribute('transform', `translate(${x}, ${y})`);
+        g.setAttribute('tabindex', '0');
+        g.setAttribute('role', 'button');
+        g.setAttribute('aria-label', `Tree Node ${key}${data && data.title ? ': ' + data.title : ''}`);
 
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('class', 'node-circle');
@@ -167,15 +174,22 @@ class BSTVisualizer {
         g.appendChild(circle);
         g.appendChild(text);
 
-        // Title tooltip
+        // Accessible tooltip
         if (data && data.title) {
             const titleEl = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-            titleEl.textContent = `Key: ${key}\nItem: ${data.title}`;
+            titleEl.textContent = `Key: ${key}\nItem: ${data.title}\n(Click or press Enter to search)`;
             g.appendChild(titleEl);
         }
 
         g.addEventListener('click', () => {
             this.searchKey(key);
+        });
+
+        g.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.searchKey(key);
+            }
         });
 
         parent.appendChild(g);
@@ -403,5 +417,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const resetBtn = document.getElementById('btn-reset');
         if (resetBtn) resetBtn.addEventListener('click', () => visualizer.resetTree());
+
+        // Responsive resize listener with debouncing
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (visualizer && visualizer.treeData) {
+                    visualizer.render();
+                }
+            }, 150);
+        });
     }
 });

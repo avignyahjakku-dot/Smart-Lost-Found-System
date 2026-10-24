@@ -8,57 +8,67 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Accessibility Skip Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Main Navigation Bar -->
     <header class="navbar">
         <div class="nav-container">
-            <a href="{{ url_for('items.home') }}" class="brand">
+            <a href="{{ url_for('items.home') }}" class="brand" aria-label="CampusFind Homepage">
                 <span>🔍 CampusFind</span>
                 <span class="brand-badge">BTech Project</span>
             </a>
 
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="{{ url_for('items.browse') }}" class="nav-link">Catalog</a></li>
-                    <li><a href="{{ url_for('items.matching_hub') }}" class="nav-link">Smart Matches</a></li>
-                    <li><a href="{{ url_for('dsa.visualizer') }}" class="nav-link">BST Visualizer</a></li>
+            <!-- Mobile Menu Toggle Button -->
+            <button type="button" id="nav-toggle-btn" class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-menu-wrapper">
+                &#9776;
+            </button>
+
+            <!-- Navigation Links & Actions Wrapper -->
+            <div class="nav-menu-wrapper" id="nav-menu-wrapper">
+                <nav aria-label="Primary Navigation">
+                    <ul class="nav-menu">
+                        <li><a href="{{ url_for('items.browse') }}" class="nav-link">Catalog</a></li>
+                        <li><a href="{{ url_for('items.matching_hub') }}" class="nav-link">Smart Matches</a></li>
+                        <li><a href="{{ url_for('dsa.visualizer') }}" class="nav-link">BST Visualizer</a></li>
+
+                        {% if current_user.is_authenticated %}
+                            <li><a href="{{ url_for('items.user_dashboard') }}" class="nav-link">My Activity</a></li>
+                            {% if current_user.is_admin %}
+                                <li><a href="{{ url_for('admin.dashboard') }}" class="nav-link nav-link-admin" title="Administrator Control Center">🛡️ Admin Panel</a></li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                </nav>
+
+                <div class="nav-cta">
+                    <a href="{{ url_for('items.report_lost') }}" class="btn btn-sm btn-danger">+ Report Lost</a>
+                    <a href="{{ url_for('items.report_found') }}" class="btn btn-sm btn-success">+ Report Found</a>
 
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('items.user_dashboard') }}" class="nav-link">My Activity</a></li>
-                        {% if current_user.is_admin %}
-                            <li><a href="{{ url_for('admin.dashboard') }}" class="nav-link" style="color: #ea580c; font-weight: 700;">Admin Panel</a></li>
-                        {% endif %}
+                        <span class="nav-user-pill">
+                            👤 {{ current_user.name.split(' ')[0] }}{% if current_user.is_admin %} <small style="color: #ea580c; font-weight: 700;">(Admin)</small>{% endif %}
+                        </span>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-secondary" title="Sign out of CampusFind">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-sm btn-secondary">Login</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-primary">Sign Up</a>
                     {% endif %}
-                </ul>
-            </nav>
-
-            <div class="nav-cta">
-                <a href="{{ url_for('items.report_lost') }}" class="btn btn-sm btn-danger">+ Report Lost</a>
-                <a href="{{ url_for('items.report_found') }}" class="btn btn-sm btn-success">+ Report Found</a>
-
-                {% if current_user.is_authenticated %}
-                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--secondary); margin-left: 0.5rem;">
-                        👤 {{ current_user.name.split(' ')[0] }}
-                    </span>
-                    <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-secondary" title="Sign out">Logout</a>
-                {% else %}
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-sm btn-secondary">Login</a>
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-primary">Sign Up</a>
-                {% endif %}
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Main Content Container -->
-    <main class="main-wrapper">
+    <main id="main-content" class="main-wrapper" role="main">
         <!-- Flash Notifications -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="flash-container">
+                <div class="flash-container" role="region" aria-label="System Notifications">
                     {% for category, message in messages %}
-                        <div class="flash-alert flash-{{ category }}">
+                        <div class="flash-alert flash-{{ category }}" role="alert">
                             <span>{{ message }}</span>
-                            <button type="button" class="flash-close">&times;</button>
+                            <button type="button" class="flash-close" aria-label="Dismiss alert">&times;</button>
                         </div>
                     {% endfor %}
                 </div>

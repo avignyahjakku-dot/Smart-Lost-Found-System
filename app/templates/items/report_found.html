@@ -17,14 +17,16 @@
 
         <div class="card-body">
             <form action="{{ url_for('items.report_found') }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
-                    <label class="form-label" for="title">Item Name / Title <span class="required">*</span></label>
+                    <label class="form-label" for="title">Item Name / Title <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Blue Casio Scientific Calculator FX-991EX" required autofocus>
+                    <div class="form-hint">Brief title identifying the found object.</div>
                 </div>
 
                 <div class="grid grid-2" style="gap: 1rem;">
                     <div class="form-group">
-                        <label class="form-label" for="category">Category <span class="required">*</span></label>
+                        <label class="form-label" for="category">Category <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <select id="category" name="category" class="form-control" required>
                             <option value="">Select Category...</option>
                             {% for cat in categories %}
@@ -34,7 +36,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="location">Found Location <span class="required">*</span></label>
+                        <label class="form-label" for="location">Found Location <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <select id="location" name="location" class="form-control" required>
                             <option value="">Select Campus Location...</option>
                             {% for loc in locations %}
@@ -46,24 +48,25 @@
 
                 <div class="grid grid-2" style="gap: 1rem;">
                     <div class="form-group">
-                        <label class="form-label" for="item_date">Date Found <span class="required">*</span></label>
+                        <label class="form-label" for="item_date">Date Found <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <input type="date" id="item_date" name="item_date" class="form-control" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="image">Photo of the Found Item</label>
-                        <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                        <input type="file" id="image" name="image" class="form-control" accept="image/png, image/jpeg, image/gif, image/webp">
+                        <div class="form-hint">PNG, JPG, GIF, or WEBP (up to 5MB).</div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="storage_location">Current Storage / Custody Location <span class="required">*</span></label>
+                    <label class="form-label" for="storage_location">Current Storage / Custody Location <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <input type="text" id="storage_location" name="storage_location" class="form-control" placeholder="e.g. Central Library Front Desk or Main Security Office Gate 1" required>
                     <div class="form-hint">Tell the owner where they can physically pick up or verify this item.</div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="description">Item Description & Condition <span class="required">*</span></label>
+                    <label class="form-label" for="description">Item Description & Condition <span class="required" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <textarea id="description" name="description" class="form-control" rows="4" placeholder="Describe general appearance, visible brand, color, condition..." required></textarea>
                 </div>
 

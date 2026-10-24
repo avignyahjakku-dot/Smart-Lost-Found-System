@@ -148,5 +148,30 @@ class TestSmartMatching(unittest.TestCase):
         self.assertEqual(matches[0]['found_item_id'], 3)
         self.assertGreaterEqual(matches[0]['total_score'], 70.0)
 
+    def test_missing_and_malformed_fields_handled_safely(self):
+        """Engine handles None fields, malformed dates, and empty tokens gracefully."""
+        lost = {
+            'id': 99,
+            'title': '',
+            'category': None,
+            'description': None,
+            'location': None,
+            'item_date': 'invalid-date-format'
+        }
+        found = {
+            'id': 100,
+            'title': None,
+            'category': 'Unknown Category',
+            'description': 'Some description',
+            'location': 'Unknown Location',
+            'item_date': None
+        }
+
+        # Must not raise an unhandled exception
+        result = evaluate_match(lost, found)
+        self.assertIsNotNone(result)
+        self.assertEqual(result['tier'], 'Low')
+        self.assertLess(result['total_score'], 30.0)
+
 if __name__ == '__main__':
     unittest.main()

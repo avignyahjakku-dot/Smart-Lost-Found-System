@@ -1,251 +1,320 @@
-# CampusFind — Smart Lost & Found System
+# CampusFind — Smart University Lost & Found System
 
 > **Degree Program:** Bachelor of Technology (BTech) in Computer Science & Engineering (CSE)  
-> **Project Type:** Individual Capstone Project  
-> **Domain:** Full-Stack Web Development, Relational Database Engineering, Data Structures & Algorithms (DSA)  
-> **Primary Technology Stack:** Python 3.13, Flask 3.1, MySQL / SQLite, HTML5, CSS3, Modern JavaScript  
+> **Project Type:** Two-Person Team Capstone Project  
+> **Domain:** Full-Stack Web Engineering, Relational Database Systems, Applied Data Structures & Algorithms (DSA), Application Security  
+> **Repository:** [https://github.com/avignyahjakku-dot/Smart-Lost-Found-System.git](https://github.com/avignyahjakku-dot/Smart-Lost-Found-System.git)  
+> **Active Branch:** `main`  
+> **Automated Test Status:** 51 Tests / 0 Errors / 0 Failures ($51/51$ Passing)  
 
 ---
 
-## 1. Project Overview & Problem Statement
+## 1. Project Overview
 
-Misplacing personal belongings (student ID cards, scientific calculators, laptops, room keys, headphones, water bottles) is an everyday occurrence on university campuses. Traditional campus lost-and-found practices rely on manual WhatsApp group forwards, fragmented physical notice boards, or scattered security desks. These informal methods suffer from several critical shortcomings:
-- **No Centralized Repository:** Students cannot determine whether an item turned in at the cafeteria is held at the main gate, library, or department office.
-- **Vulnerability to False Claims:** Open public messages reveal all item details, enabling fraudulent collections without ownership verification.
-- **Zero Intelligent Correlation:** Sifting through hundreds of reports manually to match a missing item with a found item is slow and error-prone.
-
-**CampusFind** solves this problem by providing a centralized, secure web application powered by:
-1. A **Multi-Factor Heuristic Matching Engine** that mathematically correlates lost and found reports based on category compatibility, tokenized keyword overlap, campus landmark proximity, and chronological plausibility.
-2. An in-memory **Binary Search Tree (BST)** data structure implementation with logarithmic $\mathcal{O}(\log n)$ indexing and an interactive SVG visualizer demonstrating core tree operations.
-3. A **Role-Based Security & Claim Verification Workflow** with secret ownership questions and administrative moderation before items are released.
+**CampusFind** is a full-stack university lost-and-found web application developed as a two-person BTech CSE capstone project. It bridges the gap between misplaced personal belongings and campus finders. It integrates relational database persistence, an intelligent multi-factor heuristic matching engine, an authentic in-memory Binary Search Tree (BST) with an interactive SVG visualizer, role-based administrative moderation, and dual-factor ownership verification workflows.
 
 ---
 
-## 2. Objectives and Key Features
+## 2. Problem Statement
 
-### User Capabilities
-- **Account Management:** Student/Staff registration, secure login, password hashing (`Werkzeug`), and session management.
-- **Report Lost Items:** Specify item details, category, campus location, date/time, upload an optional photo, and establish a secret ownership hint question.
-- **Report Found Items:** Record discovered items, category, date, and physical custody/storage location (e.g. Central Library Front Desk).
-- **Multi-Criteria Search & Filtering:** Filter repository records dynamically by item type (`lost`/`found`), category, campus location, keyword, and date sorting.
-- **Item Details & Algorithmic Insights:** Inspect item attributes, view automated match predictions with percentage scores, and review the logarithmic BST lookup path.
-- **Ownership Claim Submission:** Submit verified ownership claims with proof descriptions, serial numbers, and answers to secret verification questions.
-- **User Activity Dashboard:** Track personal lost reports, found reports, and real-time claim evaluation statuses (`Pending`, `Approved`, `Rejected`).
+On university campuses, thousands of personal belongings—student identity cards, scientific calculators, laptops, room keys, noise-canceling headphones, and water bottles—are misplaced every semester. Conventional recovery methods suffer from systemic inefficiencies:
+- **Fragmented Communication:** Information is scattered across informal WhatsApp group messages, physical notice boards, and disconnected security gates. Students have no single source of truth.
+- **Vulnerability to False & Fraudulent Claims:** Public lost-and-found listings openly broadcast all details (serial numbers, colors, stickers), allowing unauthorized individuals to falsely claim items.
+- **Lack of Automated Correlation:** Manually correlating hundreds of lost reports with turned-in custody items is tedious, slow, and error-prone.
+- **Absence of Pedagogical DSA Integration:** Academic projects often fail to connect classroom algorithmic concepts (like tree traversals and logarithmic indexing) with real-world production web application requirements.
 
-### Administrative Capabilities
-- **Role-Based Admin Protection:** Protected `@admin_required` decorators preventing unauthorized access.
-- **Administrative Control Center:** Real-time metrics tracking total items, open lost items, open found items, pending claims, and resolved cases.
-- **Claim Moderation:** Inspect submitted claimant evidence, review secret answers, approve or reject claims with administrative notes, and update item statuses.
-- **Report Moderation:** Edit item statuses or permanently remove spam/duplicate reports.
-- **System Audit Log:** Immutable activity log tracking all administrative interventions and claim submissions.
-
-### Data Structures & Algorithms (DSA) Integration
-- **Real Python Binary Search Tree:** Authentic, non-trivial BST class supporting:
-  - Logarithmic insertion (`insert(key, data)`),
-  - Search with branch path logging (`search(key)`),
-  - Deletion handling all three classic cases (leaf, 1 child, 2 children with in-order successor),
-  - In-order, pre-order, and post-order traversals,
-  - Range queries (`range_search(min_key, max_key)`).
-- **Interactive SVG Visualizer:** Web interface rendering the exact Python BST structure with step-by-step traversal highlighting, comparison counters, and an academic study comparing in-memory BSTs with on-disk B+ Tree database indexes.
+CampusFind resolves these challenges by providing a centralized, secure web repository with automated matching heuristics and an interactive algorithmic visualizer.
 
 ---
 
-## 3. Technology Stack
+## 3. Project Objectives
 
-| Layer | Technologies Used | Justification |
-| :--- | :--- | :--- |
-| **Frontend** | HTML5, CSS3 (Custom Design System), Modern Vanilla JavaScript | Lightweight, zero external CDN dependencies, fully responsive across desktop, tablet, and mobile. |
-| **Backend** | Python 3.13, Flask 3.1, Jinja2, Werkzeug | Robust WSGI framework, clean blueprint modularity, and native object-oriented data structures. |
-| **Database** | MySQL 8.0+ / SQLite 3 (Dual-Engine Adapter) | Complete relational schema with foreign key constraints, indexes, and automatic fallback for immediate local testing. |
-| **DSA** | Custom Python Binary Search Tree (BST) | Logarithmic in-memory indexing, sorted ordered traversals, and dynamic tree visualization. |
-| **Security** | Werkzeug Password Hashing (`scrypt`/`pbkdf2`), Parametric SQL | Prevents credential leaks and SQL injection attacks. |
-| **Testing** | Python `unittest` | Automated test suite covering BST operations, auth, filtering, matching, and claims. |
+1. **Centralized Campus Repository:** Provide an accessible, responsive platform for students, faculty, and security personnel to log and search lost and found property.
+2. **Intelligent Algorithmic Matching:** Implement a multi-factor similarity scoring function that automatically pairs missing items with found inventory.
+3. **Applied Data Structures (BST):** Implement a pure Python in-memory Binary Search Tree for $O(\log n)$ ordered lookups and range queries, coupled with a dynamic vector-rendered SVG visualizer.
+4. **Security & Claim Verification:** Establish a verified recovery lifecycle incorporating secret owner challenge questions, proof documentation, and administrative adjudication.
+5. **Robust Engineering & Testing:** Deliver a dual-engine database architecture (MySQL and SQLite fallback) validated by an automated test suite containing 51 unit, integration, and security tests.
 
 ---
 
-## 4. Project Folder Structure
+## 4. Main Features
+
+### 4.1 Student & Staff Features
+- **Account Management:** User registration, secure login, password hashing, and session management.
+- **Report Lost Items:** Log missing belongings with category, campus location, date/time, description, optional image, and an owner verification hint question.
+- **Report Found Items:** Record discovered property, specifying the physical storage desk (e.g. Central Library Front Desk, Security Gate 1) where the item is securely held.
+- **Catalog Browsing & Search:** Multi-parameter search by keyword, item type (`lost`/`found`), category, campus location, and date sorting.
+- **Item Details & Algorithmic Insights:** Inspect item attributes, review the live in-memory BST logarithmic lookup path, and inspect top-ranked candidate matches with percentage scores.
+- **Ownership Claim Submission:** Submit verified ownership claims with proof descriptions, contact phone numbers, and answers to secret verification questions.
+- **Personal Activity Dashboard:** Track personal lost reports, found reports, and real-time claim evaluation statuses (`Pending`, `Approved`, `Rejected`).
+
+### 4.2 Administrative Control Center
+- **Role-Based Protection:** Protected `@admin_required` decorators preventing unauthorized access.
+- **Live Metrics Dashboard:** Real-time metrics tracking total repository items, pending claims awaiting review, and resolved cases.
+- **Claim Moderation:** Inspect claimant evidence, evaluate secret answers, and approve or reject claims with administrative notes. Approving a claim automatically transitions the found item to `claimed`.
+- **Item Moderation:** Delete spam, duplicate, or inappropriate submissions with cascading cleanup.
+- **System Audit Log:** Immutable activity log tracking all administrative decisions and moderation events.
+
+### 4.3 Data Structures & Algorithms (DSA) Engine
+- **Pure Python BST Class:** Supports $O(\log n)$ insertion, search with branch path tracing, three-case node deletion (leaf, 1 child, 2 children with in-order successor), and tree traversals.
+- **Dynamic SVG Visualizer:** Vector canvas animating tree layout, search branch comparisons, deletion transitions, and traversals (in-order, pre-order, post-order).
+- **Full Keyboard Accessibility:** Tree nodes are keyboard focusable (<kbd>Tab</kbd>) and executable (<kbd>Enter</kbd> / <kbd>Space</kbd>).
+
+---
+
+## 5. Technology Stack
+
+| Layer | Technology | Version | Purpose & Justification |
+| :--- | :--- | :---: | :--- |
+| **Backend Framework** | Python / Flask | 3.13 / 3.1.0 | Lightweight, robust WSGI framework with clean blueprint modularity. |
+| **WSGI / Security** | Werkzeug | 3.1.3 | Key derivation password hashing (`scrypt`/`pbkdf2`) and secure request routing. |
+| **Template Engine** | Jinja2 | 3.1.5 | Server-side rendering with automatic HTML contextual escaping to prevent XSS. |
+| **Relational Database**| MySQL / SQLite | 8.0+ / 3 | Dual-engine database adapter (`app/db.py`) supporting MySQL in production and zero-config SQLite locally. |
+| **Database Driver** | PyMySQL | 1.1.1 | Pure-Python MySQL client for database connectivity. |
+| **Configuration** | python-dotenv | 1.0.1 | Parses `.env` files for isolated environment variables. |
+| **Frontend UI** | HTML5 / CSS3 / JavaScript | Modern / Vanilla | Custom design system; zero external CSS frameworks or CDN dependencies. |
+| **Testing** | Python `unittest` | Built-in | Automated test suite comprising 51 tests across 8 modular test suites. |
+
+---
+
+## 6. Architecture & Directory Structure
+
+CampusFind follows a **Layered Model-View-Controller (MVC) Architecture** augmented by an **In-Memory Algorithmic Subsystem**:
 
 ```
 smart lost & found system/
 │
 ├── app/
-│   ├── __init__.py                 # Flask app factory, blueprint registration, Jinja filters
-│   ├── config.py                   # Environment configuration classes
-│   ├── db.py                       # Unified database manager (MySQL & SQLite auto-fallback)
-│   ├── auth.py                     # Authentication routes (register, login, logout, session)
+│   ├── __init__.py                 # Flask app factory, blueprint registry, CSRF middleware, Jinja filters
+│   ├── config.py                   # Environment configuration classes (Dev, Testing, Prod)
+│   ├── db.py                       # Unified dual-engine database adapter (MySQL & SQLite fallback)
+│   ├── auth.py                     # Authentication routes (register, login, logout, session guards)
 │   ├── items.py                    # Lost/Found reporting, catalog browse, item detail, user dashboard
 │   ├── claims.py                   # Ownership claim submissions and verification
 │   ├── admin.py                    # Administrative moderation dashboard and review actions
 │   ├── matching.py                 # Multi-factor lost & found similarity matching engine
+│   │
 │   ├── dsa/
 │   │   ├── __init__.py             # DSA package initializer
-│   │   ├── bst.py                  # Real Binary Search Tree implementation in Python
+│   │   ├── bst.py                  # Pure Python Binary Search Tree implementation
 │   │   ├── bst_service.py          # In-memory item indexing and logarithmic search service
 │   │   └── routes.py               # BST visualizer routes and REST API endpoints
+│   │
 │   ├── static/
 │   │   ├── css/
-│   │   │   ├── main.css            # Responsive layout & modern design system
-│   │   │   └── visualizer.css      # BST tree canvas, animations, and console styles
+│   │   │   ├── main.css            # Responsive custom design system, accessibility, badges, mobile drawer
+│   │   │   └── visualizer.css      # BST SVG tree canvas, animated node states, console styles
 │   │   ├── js/
-│   │   │   ├── main.js             # Flash dismiss, modal controllers, client actions
-│   │   │   └── bst_visualizer.js   # SVG tree layout engine, path animator, and traversal player
-│   │   └── uploads/                # Directory for uploaded item images (.gitkeep)
+│   │   │   ├── main.js             # Mobile menu toggle, modal controllers, form double-submit lock
+│   │   │   └── bst_visualizer.js   # Dynamic SVG layout engine, debounced resize, keyboard accessible nodes
+│   │   └── uploads/                # Directory for user-uploaded item images (.gitkeep)
+│   │
 │   └── templates/
-│       ├── base.html               # Master layout with responsive navbar and footer
-│       ├── index.html              # Landing page featuring live stats, quick search, recent items
+│       ├── base.html               # Master layout with skip-link, responsive navigation, flash alerts
+│       ├── index.html              # Landing page featuring live metrics, quick search, recent reports
 │       ├── auth/
-│       │   ├── login.html          # User login form with demo credential hints
-│       │   └── register.html       # Student/staff registration form
+│       │   ├── login.html          # User login form with demo credentials
+│       │   └── register.html       # Account registration form with 8-character password hint
 │       ├── items/
-│       │   ├── report_lost.html    # Lost item reporting form with secret verification hint
-│       │   ├── report_found.html   # Found item reporting form with custody storage desk
-│       │   ├── browse.html         # Filterable catalog with search and sorting
-│       │   └── detail.html         # Item details, match candidate cards, claim modal
+│       │   ├── report_lost.html    # Lost item reporting form with secret hint
+│       │   ├── report_found.html   # Found item reporting form with physical custody desk
+│       │   ├── browse.html         # Filterable catalog with search, category/location filters, sorting
+│       │   └── detail.html         # Responsive detail view, match candidate cards, claim modal
 │       ├── user/
-│       │   └── dashboard.html      # User's reports and claims status tracker
+│       │   └── dashboard.html      # User activity dashboard with rich empty states
 │       ├── admin/
-│       │   └── dashboard.html      # Admin dashboard with claim decisions and audit log
+│       │   └── dashboard.html      # Admin dashboard with claim decisions, moderation, audit log
 │       ├── matching/
-│       │   └── matches.html        # Smart matching hub with side-by-side factor breakdown
+│       │   └── matches.html        # Smart matching hub with side-by-side factor breakdowns
 │       └── dsa/
-│           └── visualizer.html     # Interactive BST visualizer and DSA comparison paper
+│           └── visualizer.html     # Interactive BST visualizer and academic complexity study
+│
+├── docs/
+│   ├── architecture.md             # Detailed high-level architectural specification & sequence flows
+│   ├── database-design.md          # ER diagrams, table schemas, B+ Tree indexing, and SQL translations
+│   ├── testing.md                  # Comprehensive test plan, 8 test suites, and QA methodology
+│   ├── user-guide.md               # User & admin operational manual with step-by-step workflows
+│   ├── security.md                 # OWASP Top 10 threat mitigation & application hardening specification
+│   └── viva-preparation.md         # College demonstration script, viva Q&A, and honest project claims
 │
 ├── tests/
-│   ├── __init__.py                 # Test suite initializer
-│   ├── test_bst.py                 # 10 unit tests for BST operations, traversals, and edge cases
-│   ├── test_auth.py                # 4 unit tests for registration, hashing, login, admin protection
-│   ├── test_items.py               # 3 integration tests for item creation and catalog filtering
-│   ├── test_matching.py            # 6 unit tests for similarity factors and ranking heuristics
-│   └── test_claims.py              # 1 integration test for claim submission and admin approval
+│   ├── __init__.py                 # Test package initializer
+│   ├── test_auth.py                # 5 tests: registration, password hashing, sessions, admin guards
+│   ├── test_bst.py                 # 10 tests: BST insertion, traversals, 3-case deletion, range queries
+│   ├── test_claims.py              # 5 tests: claim lifecycle, rejection flow, type checks, input bounds
+│   ├── test_dsa_routes.py          # 7 tests: visualizer HTML, JSON tree structure, insert/search/delete API
+│   ├── test_integration.py         # 6 tests: app startup, test DB isolation, 404 handler, foreign keys
+│   ├── test_items.py               # 5 tests: report lost/found, catalog filters, upload warnings
+│   ├── test_matching.py            # 7 tests: tokenization, Jaccard similarity, category/date heuristics
+│   └── test_security.py            # 6 tests: password complexity, session cookies, IDOR, SQLi, XSS
 │
 ├── schema.sql                      # Complete, reproducible MySQL database creation script
-├── seed.py                         # Realistic campus sample data generator (users, items, claims)
-├── run.py                          # Main application entry point
-├── run_tests.py                    # Standalone test runner (runs all 24 unit/integration tests)
+├── seed.py                         # Realistic campus sample data generator (pre-correlated pairs)
+├── run.py                          # Main WSGI application entry point
+├── run_tests.py                    # Standalone test runner (executes all 51 automated tests)
 ├── requirements.txt                # Locked Python dependencies
-├── .env.example                    # Template environment variables file
+├── .env.example                    # Template environment variables file with placeholder values
 ├── .gitignore                      # Git exclusion rules for venvs, credentials, and caches
-├── ARCHITECTURE.md                 # System architecture, matching formulas, and security design
-├── DATABASE.md                     # Database ER design, relationships, and indexing analysis
-└── README.md                       # Comprehensive project documentation
+├── ARCHITECTURE.md                 # Architectural specification summary
+├── DATABASE.md                     # Database specification summary
+└── README.md                       # Master project documentation
 ```
 
 ---
 
-## 5. Prerequisites
+## 7. Prerequisites
 
-Before running the application, ensure you have:
+Before installing the application, ensure the host system provides:
 - **Python:** Version 3.10, 3.11, 3.12, or 3.13 installed (verified on Python 3.13.6 64-bit).
-- **Git:** (Optional, for repository versioning).
-- **MySQL / MariaDB:** (Optional for production; if MySQL is not running, the application automatically uses SQLite without any manual setup).
+- **Operating System:** Windows, macOS, or Linux.
+- **Git:** Installed for version control operations.
+- **MySQL Server (Optional):** MySQL 8.0+ or MariaDB 10.4+ (if choosing MySQL over the automatic SQLite engine).
 
 ---
 
-## 6. Installation & Setup Instructions
+## 8. Installation Instructions
 
-### Step 1: Clone or Open the Workspace
-Open a terminal in the project directory:
+Open your command terminal and clone the repository:
 ```bash
-cd "smart lost & found system"
+git clone https://github.com/avignyahjakku-dot/Smart-Lost-Found-System.git
+cd "Smart-Lost-Found-System"
 ```
 
-### Step 2: (Recommended) Create and Activate a Virtual Environment
+---
+
+## 9. Virtual Environment Setup
+
+Isolate project dependencies by creating a dedicated Python virtual environment:
+
+### On Windows (PowerShell):
 ```powershell
-# Windows PowerShell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
+
+### On macOS / Linux (Bash):
 ```bash
-# Linux / macOS
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### Step 3: Install Dependencies
+---
+
+## 10. Dependency Installation
+
+Install the locked dependencies from `requirements.txt`:
 ```bash
 pip install -r requirements.txt
 ```
-*Note:* The core dependencies are `Flask`, `Werkzeug`, `PyMySQL`, and `python-dotenv`.
+
+Core dependencies installed:
+- `Flask==3.1.0` (Core WSGI framework)
+- `Werkzeug==3.1.3` (Routing, password hashing, session primitives)
+- `Jinja2==3.1.5` (Template rendering and auto-escaping)
+- `PyMySQL==1.1.1` (MySQL database client driver)
+- `python-dotenv==1.0.1` (Environment variable loader)
 
 ---
 
-## 7. Database Configuration
+## 11. Database Configuration & Schema Setup
 
-CampusFind features a **Unified Dual-Engine Database Architecture** in [`app/db.py`](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/app/db.py):
+CampusFind provides an automated **Dual-Engine Architecture** in [`app/db.py`](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/app/db.py):
 
-### Option A: Out-of-the-Box Local Running (SQLite — Default)
-No database server installation is required. The system automatically initializes `campusfind.db` with relational constraints, tables, and foreign keys on first launch.
+### Option A: Out-of-the-Box SQLite (Default & Recommended for Local Evaluation)
+No database installation or manual SQL execution is required. If MySQL is not configured or unreachable, the application automatically initializes `campusfind.db` with relational constraints, foreign keys, and indexes on first launch.
 
 ### Option B: MySQL Database Setup
-If you have MySQL Server (or XAMPP / WampServer) running locally:
-1. Open MySQL Command Line or phpMyAdmin and execute `schema.sql`:
+If using a local MySQL instance (or XAMPP / WampServer):
+1. Open the MySQL terminal or management client and apply `schema.sql`:
    ```bash
    mysql -u root -p < schema.sql
    ```
-2. Configure `.env`:
-   ```ini
-   DB_TYPE=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_NAME=campusfind
-   DB_USER=root
-   DB_PASSWORD=your_mysql_password
-   ```
+2. Update your `.env` file to select `DB_TYPE=mysql` and provide connection credentials.
 
 ---
 
-## 8. Environment Variables Configuration
+## 12. Environment Variable Configuration
 
-Copy `.env.example` to `.env`:
+Create a local `.env` configuration file from the provided template:
+
+### Windows (PowerShell):
+```powershell
+Copy-Item .env.example .env
+```
+
+### Linux / macOS:
 ```bash
 cp .env.example .env
 ```
-Key configuration parameters:
-- `SECRET_KEY`: Random secret string used for session cookie encryption.
-- `DB_TYPE`: Set to `sqlite` for local file database or `mysql` for MySQL server.
-- `DEFAULT_ADMIN_EMAIL`: Initial admin login (`admin@campusfind.edu`).
-- `DEFAULT_ADMIN_PASSWORD`: Initial admin password (`Admin@CampusFind2026`).
+
+Configure the environment parameters inside `.env`:
+```ini
+# Flask Application Environment
+FLASK_APP=run.py
+FLASK_ENV=development
+FLASK_DEBUG=1
+SECRET_KEY=replace_with_a_secure_random_hex_string_in_production
+
+# Database Connection (sqlite or mysql)
+DB_TYPE=sqlite
+SQLITE_PATH=campusfind.db
+
+# MySQL Configuration (Only required if DB_TYPE=mysql)
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=campusfind
+DB_USER=root
+DB_PASSWORD=your_mysql_password_here
+
+# Security Settings
+SESSION_COOKIE_SECURE=False
+
+# Default Seed Administrator Credentials
+DEFAULT_ADMIN_EMAIL=admin@campusfind.edu
+DEFAULT_ADMIN_PASSWORD=Admin@CampusFind2026
+```
+
+> [!NOTE]
+> `.env` contains local environment settings and is excluded from Git tracking via `.gitignore`. Never commit active production secrets to version control.
 
 ---
 
-## 9. Seeding Realistic Sample Data
+## 13. Application Startup Commands
 
-To populate the repository with realistic university lost and found records (including pre-correlated high-match pairs, diverse categories, and sample claims):
+### Step 1: Seed Realistic Demonstration Data (Optional but Recommended)
+Populate the repository with realistic sample users, pre-correlated lost/found item pairs, and claim records:
 ```bash
 python seed.py --reset
 ```
 
-Pre-seeded demonstration accounts:
-- **Administrator:** `admin@campusfind.edu` / `Admin@CampusFind2026`
-- **Student 1:** `alex@campusfind.edu` / `Student@123`
-- **Student 2:** `priya@campusfind.edu` / `Student@123`
-- **Staff / Faculty:** `vance@campusfind.edu` / `Student@123`
-- **Security Officer:** `security@campusfind.edu` / `Student@123`
-
----
-
-## 10. Running the Application
-
-Launch the local development server:
+### Step 2: Launch the Web Server
+Start the Flask development server:
 ```bash
 python run.py
 ```
-Open your browser and navigate to:
+
+Open a web browser and visit:
 ```
 http://127.0.0.1:5000
 ```
 
 ---
 
-## 11. Automated Testing
+## 14. Test Execution Instructions
 
-The project includes 24 automated unit and integration tests covering data structures, matching heuristics, security, and administrative workflows.
+CampusFind includes 51 automated unit, integration, algorithmic, and security tests.
 
-Run all tests via the standalone runner:
+### Run All 51 Tests via Standalone Runner:
 ```bash
 python run_tests.py
 ```
-Expected output:
+
+### Alternatively, Run via Python `unittest`:
+```bash
+python -m unittest discover tests
+```
+
+### Expected Output:
 ```
 ======================================================================
  CampusFind (Smart Lost & Found System) — Automated Test Suite
@@ -253,6 +322,7 @@ Expected output:
 test_admin_route_protection (test_auth.TestAuth) ... ok
 test_duplicate_email_registration_blocked (test_auth.TestAuth) ... ok
 test_login_and_logout_flow (test_auth.TestAuth) ... ok
+test_registration_validation_failures (test_auth.TestAuth) ... ok
 test_user_registration_success (test_auth.TestAuth) ... ok
 test_bst_ordering_and_traversal (test_bst.TestBinarySearchTree) ... ok
 test_deletion_case_1_leaf (test_bst.TestBinarySearchTree) ... ok
@@ -264,98 +334,150 @@ test_min_and_max (test_bst.TestBinarySearchTree) ... ok
 test_range_search_pruning (test_bst.TestBinarySearchTree) ... ok
 test_search_path_tracing (test_bst.TestBinarySearchTree) ... ok
 test_single_node_insertion_and_search (test_bst.TestBinarySearchTree) ... ok
+test_admin_item_deletion (test_claims.TestClaims) ... ok
+test_claim_on_lost_item_is_rejected (test_claims.TestClaims) ... ok
+test_claim_rejection_flow (test_claims.TestClaims) ... ok
+test_claim_validation_missing_fields_and_oversized (test_claims.TestClaims) ... ok
 test_submit_claim_lifecycle (test_claims.TestClaims) ... ok
+test_api_delete_key (test_dsa_routes.TestDsaRoutes) ... ok
+test_api_insert_and_validation (test_dsa_routes.TestDsaRoutes) ... ok
+test_api_reset (test_dsa_routes.TestDsaRoutes) ... ok
+test_api_search_path_tracing (test_dsa_routes.TestDsaRoutes) ... ok
+test_api_traversals (test_dsa_routes.TestDsaRoutes) ... ok
+test_api_tree_structure (test_dsa_routes.TestDsaRoutes) ... ok
+test_visualizer_page_renders (test_dsa_routes.TestDsaRoutes) ... ok
+test_application_startup_in_test_configuration (test_integration.TestIntegration) ... ok
+test_catalog_browsing_page (test_integration.TestIntegration) ... ok
+test_custom_404_error_page (test_integration.TestIntegration) ... ok
+test_database_persistence_and_foreign_keys (test_integration.TestIntegration) ... ok
+test_homepage_rendering_and_metrics (test_integration.TestIntegration) ... ok
+test_matching_hub_page (test_integration.TestIntegration) ... ok
 test_browse_catalog_and_filtering (test_items.TestItems) ... ok
 test_report_found_item (test_items.TestItems) ... ok
+test_report_item_validation_failures (test_items.TestItems) ... ok
 test_report_lost_item (test_items.TestItems) ... ok
+test_unsupported_image_upload_warning (test_items.TestItems) ... ok
 test_category_mismatch_penalty (test_matching.TestSmartMatching) ... ok
 test_chronological_sequence_penalty (test_matching.TestSmartMatching) ... ok
 test_clean_tokens (test_matching.TestSmartMatching) ... ok
 test_high_probability_match (test_matching.TestSmartMatching) ... ok
 test_jaccard_similarity (test_matching.TestSmartMatching) ... ok
+test_missing_and_malformed_fields_handled_safely (test_matching.TestSmartMatching) ... ok
 test_ranking_candidates (test_matching.TestSmartMatching) ... ok
+test_idor_status_modification_prevention (test_security.TestSecurity) ... ok
+test_password_hashing_and_complexity (test_security.TestSecurity) ... ok
+test_role_based_admin_protection (test_security.TestSecurity) ... ok
+test_session_cookie_security_configurations (test_security.TestSecurity) ... ok
+test_sql_injection_resilience (test_security.TestSecurity) ... ok
+test_xss_auto_escaping (test_security.TestSecurity) ... ok
 ----------------------------------------------------------------------
-Ran 24 tests in 6.78s
+Ran 51 tests in 16.105s
 
 OK
+======================================================================
+ Tests Run: 51
+ Errors:    0
+ Failures:  0
+======================================================================
 [SUCCESS] ALL TESTS PASSED SUCCESSFULLY!
 ```
 
 ---
 
-## 12. Main Routes & Endpoints
+## 15. User and Administrator Workflows
 
-| URL Path | HTTP Methods | Description | Access Level |
-| :--- | :--- | :--- | :--- |
-| `/` | `GET` | Landing page featuring metrics, quick search, and recent reports | Public |
-| `/browse` | `GET` | Catalog with multi-parameter filtering, search, and sorting | Public |
-| `/items/<id>` | `GET` | Item details, match candidate cards, and claim trigger | Public |
-| `/items/<id>/status` | `POST` | Update item status (`open`, `claimed`, `returned`, `resolved`) | Reporter / Admin |
-| `/report/lost` | `GET`, `POST` | Submit a new lost item report with secret hint | Authenticated User |
-| `/report/found` | `GET`, `POST` | Submit a new found item report with storage location | Authenticated User |
-| `/matches` | `GET` | Smart Matching Hub comparing all active campus reports | Public |
-| `/claims/submit/<id>` | `POST` | Submit ownership claim with proof details | Authenticated User |
-| `/my-dashboard` | `GET` | User dashboard: personal reports and claim statuses | Authenticated User |
-| `/admin/dashboard` | `GET` | Administrator dashboard: moderation, metrics, and audit log | Admin Only |
-| `/admin/claim/<id>/review`| `POST` | Approve or reject an ownership claim with notes | Admin Only |
-| `/admin/item/<id>/delete`| `POST` | Permanently remove inappropriate or duplicate reports | Admin Only |
-| `/dsa/visualizer` | `GET` | Interactive SVG BST visualizer & academic study page | Public |
-| `/dsa/api/tree` | `GET` | REST API returning hierarchical JSON of the BST | Public |
-| `/dsa/api/search` | `POST` | REST API executing logarithmic BST search with path trace | Public |
-| `/dsa/api/insert` | `POST` | REST API inserting key into interactive BST | Public |
-| `/dsa/api/delete` | `POST` | REST API deleting key across all 3 BST deletion cases | Public |
-| `/dsa/api/traverse` | `GET` | REST API returning in-order, pre-order, or post-order list | Public |
+### 15.1 Student & Staff Workflow
+1. **Registration / Login:** Register with campus credentials or log in with demo account (`alex@campusfind.edu` / `Student@123`).
+2. **Report Lost Belonging:** Provide title, category, campus zone, date, and a private secret hint question (e.g. *"What sticker is on the back?"*).
+3. **Review Matches:** The matching engine compares reports against open found items, ranking candidates by percentage confidence score.
+4. **Submit Claim:** If a candidate found item corresponds to the missing object, the student submits a claim with proof details, phone number, and the secret answer.
+5. **Collection:** Once approved by administration, the student collects the property from the designated physical storage custody desk.
+
+### 15.2 Administrator Workflow
+1. **Access Control Center:** Log in with administrative credentials (`admin@campusfind.edu` / `Admin@CampusFind2026`) and click **🛡️ Admin Panel**.
+2. **Review Pending Claims:** Examine claimant evidence and secret hint answers side by side.
+3. **Adjudicate Claims:** Enter administrative review notes and click **Approve** (transitions item to `claimed`) or **Reject** (leaves item `open`).
+4. **Moderate Content:** Delete duplicate or inappropriate submissions with cascading cleanup.
+5. **Inspect Audit Log:** Monitor timestamped records of all administrative actions.
 
 ---
 
-## 13. Algorithmic Architecture
+## 16. Matching Algorithm Explanation
 
-### A. Multi-Factor Smart Matching System
-Candidate pairings between lost reports ($L$) and found reports ($F$) are computed via a weighted multi-factor scoring function:
-$$\text{Score}(L, F) = S_{\text{cat}} + S_{\text{text}} + S_{\text{loc}} + S_{\text{date}}$$
+Candidate pairings between lost reports ($L$) and found reports ($F$) are computed via a multi-factor scoring function:
+$$\text{Score}(L, F) = S_{\text{cat}} + S_{\text{text}} + S_{\text{loc}} + S_{\text{date}} \in [0, 100]$$
 
-1. **Category Compatibility ($S_{\text{cat}}$, Weight: 30 pts):**
-   - Exact category match earns 30 points.
-   - Category divergence earns 0 points.
-2. **Textual Jaccard & Keyword Overlap ($S_{\text{text}}$, Weight: 35 pts):**
-   - Titles and descriptions are tokenized, normalized, and stripped of non-informative stop words.
-   - Computes Jaccard index: $J(T_L, T_F) = \frac{|T_L \cap T_F|}{|T_L \cup T_F|}$, augmented by direct title token overlaps.
-3. **Location Proximity ($S_{\text{loc}}$, Weight: 20 pts):**
-   - Exact campus building/zone match earns 20 points.
-   - Shared campus landmarks (e.g. `Library`, `Cafeteria`, `Hostel Block A`) earn 15 points.
-   - Distinct campus zones earn 3 points.
-4. **Chronological Plausibility ($S_{\text{date}}$, Weight: 15 pts):**
-   - $\Delta_{\text{days}} = \text{Date}_{\text{found}} - \text{Date}_{\text{lost}}$.
-   - If $\Delta_{\text{days}} \ge 0$: found after loss (15 pts if same day, decaying to 8 pts after 30 days).
-   - If $\Delta_{\text{days}} < -1$: found well before reported loss (0 pts — physically implausible).
+1. **Category Compatibility ($S_{\text{cat}}$, Weight: 30 pts):** Strict category matching. Equal categories award 30 points; divergent categories yield 0 points.
+2. **Textual Jaccard & Keyword Overlap ($S_{\text{text}}$, Weight: 35 pts):** Tokenizes titles and descriptions, strips punctuation and stop words, and evaluates the Jaccard similarity coefficient:
+   $$J(T_L, T_F) = \frac{|T_L \cap T_F|}{|T_L \cup T_F|}$$
+   augmented by direct title token intersections.
+3. **Location Proximity ($S_{\text{loc}}$, Weight: 20 pts):** Evaluates campus zones (Central Library, Hostels, Cafeteria, Sports Complex). Exact matches award 20 points, shared landmark tokens award 15 points, and distinct zones award 3 points.
+4. **Chronological Plausibility ($S_{\text{date}}$, Weight: 15 pts):** Evaluates temporal plausibility: found on or after lost date awards full points (15 pts same day, decaying to 8 pts after 30 days). Items found well before reported loss receive 0 points (physically implausible).
 
 **Confidence Classification:**
 - $\ge 75\%$: **High Match** (Strong candidate; attributes and timeline align).
 - $50\% - 74\%$: **Moderate Match** (Plausible candidate; several key attributes match).
 - $30\% - 49\%$: **Plausible Match** (Weak correlation; requires manual mark verification).
 
-### B. Binary Search Tree (BST) Design & Analysis
-Our real Python BST maintains in-memory indexing of active campus items keyed by `item_id` and epoch timestamps:
-- **Insertion & Search:** Average $\mathcal{O}(\log n)$, worst-case $\mathcal{O}(n)$ if skewed.
+---
+
+## 17. Binary Search Tree (BST) & Role in CampusFind
+
+### 17.1 In-Memory BST Architecture
+CampusFind incorporates a pure Python object-oriented Binary Search Tree (`app/dsa/bst.py`):
+- **Logarithmic Lookups:** Provides in-memory $O(\log n)$ average search times without database disk I/O latency.
+- **In-Order Traversal:** Delivers items sorted in ascending order in $O(n)$ linear time without requiring an external sorting algorithm.
+- **Subtree Range Pruning:** Quickly retrieves records within a date or ID interval ($\text{min\_key} \le k \le \text{max\_key}$) by skipping disjoint subtrees.
 - **Three-Case Deletion:**
-  - Case 1 (Leaf): Set parent's pointer to `None`.
-  - Case 2 (One Child): Splice out target by linking parent directly to child.
-  - Case 3 (Two Children): Find in-order successor (minimum node in right subtree), copy its key and data, and recursively delete the successor.
-- **Why BST vs. Database Indexes (B+ Tree)?**
-  - *In-Memory BST:* Extremely fast pointer dereferences in RAM ($\approx$ nanoseconds), zero disk I/O, lightweight memory overhead per node, natural ascending in-order traversal.
-  - *MySQL B+ Tree:* High fan-out ($M \ge 100$) minimizes block disk reads to $3-4$ I/O operations for millions of rows. Leaf nodes are linked in a bidirectional list for sequential range scans.
+  - *Case 1 (Leaf):* Replaces parent pointer with `None`.
+  - *Case 2 (One Child):* Splices parent pointer directly to the single child.
+  - *Case 3 (Two Children):* Finds the in-order successor (minimum node in right subtree), replaces the target payload, and recursively deletes the successor.
+
+### 17.2 Comparison: In-Memory BST vs. MySQL B+ Tree Database Indexes
+
+| Dimension | In-Memory BST (`app/dsa/bst.py`) | MySQL B+ Tree Index (InnoDB) |
+| :--- | :--- | :--- |
+| **Storage Medium** | Random Access Memory (RAM) | Secondary Disk Storage (SSD / HDD) |
+| **Branching Factor ($M$)** | Binary ($M = 2$, at most 2 children) | High Fan-Out ($M \ge 100$, hundreds of keys per 16 KB page) |
+| **Lookup Latency** | Nanoseconds (Pointer dereferencing) | Milliseconds (Cached buffer pool or disk block reads) |
+| **Tree Depth** | Moderate ($\approx \log_2 n$) | Shallow ($3 - 4$ levels for millions of records) |
+| **Range Queries** | Recursive in-order subtree pruning | Bidirectional linked leaf node traversal |
+| **Persistence** | Volatile (Synchronized from DB at startup) | Durable (ACID write-ahead logging in redo logs) |
 
 ---
 
-## 14. Known Limitations & Future Enhancements
+## 18. Known Limitations
 
-1. **Computer Vision & Image Feature Extraction:** Currently, matching uses textual description, location, category, and date. Future versions could integrate a lightweight CNN (e.g. MobileNet or CLIP) to match photo embeddings of objects.
-2. **Automated Self-Balancing (AVL / Red-Black Trees):** While the BST visualizer demonstrates standard BST mechanics, integrating self-balancing rotations would guarantee strict $\mathcal{O}(\log n)$ worst-case bounds.
-3. **Push & Email Notifications:** Automated email notifications (via SMTP) when a High-confidence candidate match ($\ge 75\%$) is detected for a student's lost item.
-4. **Campus Map Integration:** Visual interactive campus map (e.g. Leaflet.js / OpenStreetMap) pinning exact GPS lost and found zones.
+1. **Text-Only Heuristic Matching:** The current matching algorithm correlates text descriptions, categories, locations, and dates. It does not extract computer vision feature embeddings from uploaded images.
+2. **Unbalanced BST Mechanics:** While the custom BST implementation handles all 3 deletion cases and range searches, it does not perform self-balancing tree rotations (e.g. AVL or Red-Black balancing).
+3. **Simulated Email Notifications:** System notifications (such as claim approvals and match alerts) are rendered via flash messages and audit logs rather than external SMTP email dispatches.
 
 ---
 
-## 15. Academic Integrity Statement
+## 19. Future Improvements
 
-This project, **Smart Lost & Found System (CampusFind)**, was conceptualized, designed, implemented, and tested as an individual BTech Computer Science & Engineering capstone project. All architectural designs, database schemas, algorithms, and documentation represent authentic individual work adhering to academic standards.
+1. **Deep Learning Vision Matching:** Integrate a lightweight Convolutional Neural Network (e.g. MobileNet or OpenAI CLIP) to generate image embeddings and calculate cosine similarity between photos of lost and found objects.
+2. **Self-Balancing Tree Engine (AVL / Red-Black):** Implement tree rotation algorithms ensuring strict $O(\log n)$ height boundaries even under sorted sequential key insertion.
+3. **Automated SMTP / SMS Notifications:** Dispatch automated alerts to students whenever a High-confidence match ($\ge 75\%$) is detected for their missing item.
+4. **Geospatial Campus Map:** Embed an interactive campus map (e.g. Leaflet.js / OpenStreetMap) allowing users to pin exact GPS locations of incidents.
+
+---
+
+## 20. Repository Information
+
+- **Project Name:** Smart Lost & Found System (CampusFind)
+- **Degree:** Two-Person BTech Computer Science & Engineering Capstone Project
+- **Target Repository:** [https://github.com/avignyahjakku-dot/Smart-Lost-Found-System.git](https://github.com/avignyahjakku-dot/Smart-Lost-Found-System.git)
+- **Active Branch:** `main`
+
+---
+
+## Additional Documentation Files
+
+For in-depth technical documentation, refer to the following specialized guides in the [`docs/`](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/docs/) directory:
+- [**System Architecture & Request Lifecycle**](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/docs/architecture.md)
+- [**Database Design & Schema Analysis**](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/docs/database-design.md)
+- [**Automated Testing Specification & Plan**](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/docs/testing.md)
+- [**User & Administrator Operational Manual**](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/docs/user-guide.md)
+- [**Security & OWASP Hardening Specification**](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/docs/security.md)
+- [**College Demonstration & Viva Voce Guide**](file:///c:/Users/6tan5/OneDrive/Desktop/smart%20lost%20&%20found%20system/docs/viva-preparation.md)

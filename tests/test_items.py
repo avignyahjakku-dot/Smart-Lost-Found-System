@@ -5,6 +5,7 @@ Validates lost item submission, found item logging,
 catalog search filtering, and status updates.
 """
 
+import io
 import os
 import unittest
 from app import create_app
@@ -108,6 +109,56 @@ class TestItems(unittest.TestCase):
         res_type = self.client.get('/browse?type=lost')
         self.assertIn(b"Sony WH-1000XM4 Headphones", res_type.data)
         self.assertNotIn(b"Brown Leather Wallet", res_type.data)
+
+    def test_unsupported_image_upload_warning(self):
+        """Uploading an unsupported image format shows a warning flash message."""
+        file_data = (io.BytesIO(b"fake script"), 'malicious.sh')
+        res = self.client.post('/report/lost', data={
+            'title': 'Lost Keys with Unsupported Image',
+            'category': 'Keys & Cards',
+            'location': 'Hostel Blocks',
+            'item_date': '2026-10-24',
+            'description': 'Room keys.',
+            'image': file_data
+        }, content_type='multipart/form-data', follow_redirects=True)
+
+        self.assertIn(b"Uploaded file format is not supported", res.data)
+        item = query_db("SELECT image_filename FROM items WHERE title = 'Lost Keys with Unsupported Image'", one=True)
+        self.assertIsNotNone(item)
+        self.assertIsNone(item['image_filename'])
+
+    def test_report_item_validation_failures(self):
+        """Item reporting rejects missing fields, oversized titles, and descriptions."""
+        # 1. Missing required field (title)
+        res_no_title = self.client.post('/report/lost', data={
+            'title': '',
+            'category': 'Electronics & Gadgets',
+            'location': 'Central Library',
+            'item_date': '2026-10-24',
+            'description': 'Valid description.'
+        }, follow_redirects=True)
+        self.assertIn(b"Please complete all required fields", res_no_title.data)
+
+        # 2. Oversized title (> 150 characters)
+        res_long_title = self.client.post('/report/lost', data={
+            'title': 'T' * 160,
+            'category': 'Electronics & Gadgets',
+            'location': 'Central Library',
+            'item_date': '2026-10-24',
+            'description': 'Valid description.'
+        }, follow_redirects=True)
+        self.assertIn(b"Title cannot exceed 150 characters", res_long_title.data)
+
+        # 3. Oversized description (> 2000 characters)
+        res_long_desc = self.client.post('/report/found', data={
+            'title': 'Found Item With Long Desc',
+            'category': 'Electronics & Gadgets',
+            'location': 'Central Library',
+            'item_date': '2026-10-24',
+            'storage_location': 'Desk',
+            'description': 'D' * 2100
+        }, follow_redirects=True)
+        self.assertIn(b"Description cannot exceed 2000 characters", res_long_desc.data)
 
 if __name__ == '__main__':
     unittest.main()

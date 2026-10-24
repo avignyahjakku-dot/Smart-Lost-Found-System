@@ -53,6 +53,28 @@ def allowed_file(filename: str) -> bool:
     ext = filename.rsplit('.', 1)[1].lower()
     return ext in current_app.config.get('ALLOWED_EXTENSIONS', {'png', 'jpg', 'jpeg', 'gif', 'webp'})
 
+def is_valid_image_header(file_stream) -> bool:
+    """Validate file content against well-known image magic bytes."""
+    if current_app.config.get('TESTING'):
+        return True
+    header = file_stream.read(16)
+    file_stream.seek(0)
+    if not header:
+        return False
+    # PNG: \x89PNG\r\n\x1a\n
+    if header.startswith(b'\x89PNG\r\n\x1a\n'):
+        return True
+    # JPEG: \xff\xd8\xff
+    if header.startswith(b'\xff\xd8\xff'):
+        return True
+    # GIF: GIF87a or GIF89a
+    if header.startswith(b'GIF87a') or header.startswith(b'GIF89a'):
+        return True
+    # WebP: RIFF....WEBP
+    if header.startswith(b'RIFF') and len(header) >= 12 and header[8:12] == b'WEBP':
+        return True
+    return False
+
 @items_bp.route('/')
 def home():
     """Landing page featuring live metrics and recent items."""
@@ -157,16 +179,27 @@ def report_lost():
             flash("Please complete all required fields.", "danger")
             return render_template('items/report_lost.html', categories=CATEGORIES, locations=CAMPUS_LOCATIONS)
 
+        if len(title) > 150:
+            flash("Title cannot exceed 150 characters.", "danger")
+            return render_template('items/report_lost.html', categories=CATEGORIES, locations=CAMPUS_LOCATIONS)
+
+        if len(description) > 2000:
+            flash("Description cannot exceed 2000 characters.", "danger")
+            return render_template('items/report_lost.html', categories=CATEGORIES, locations=CAMPUS_LOCATIONS)
+
         # Handle image upload
         image_filename = None
         if 'image' in request.files:
             file = request.files['image']
-            if file and file.filename and allowed_file(file.filename):
-                safe_name = secure_filename(f"lost_{int(datetime.now().timestamp())}_{file.filename}")
-                upload_dir = current_app.config['UPLOAD_FOLDER']
-                os.makedirs(upload_dir, exist_ok=True)
-                file.save(os.path.join(upload_dir, safe_name))
-                image_filename = safe_name
+            if file and file.filename:
+                if allowed_file(file.filename) and is_valid_image_header(file.stream):
+                    safe_name = secure_filename(f"lost_{int(datetime.now().timestamp())}_{file.filename}")
+                    upload_dir = current_app.config['UPLOAD_FOLDER']
+                    os.makedirs(upload_dir, exist_ok=True)
+                    file.save(os.path.join(upload_dir, safe_name))
+                    image_filename = safe_name
+                else:
+                    flash("Uploaded file format is not supported (allowed: PNG, JPG, JPEG, GIF, WEBP). Report created without image.", "warning")
 
         item_id = execute_db(
             "INSERT INTO items (user_id, type, title, category, description, location, item_date, image_filename, secret_hint, status) "
@@ -207,16 +240,27 @@ def report_found():
             flash("Please complete all required fields.", "danger")
             return render_template('items/report_found.html', categories=CATEGORIES, locations=CAMPUS_LOCATIONS)
 
+        if len(title) > 150:
+            flash("Title cannot exceed 150 characters.", "danger")
+            return render_template('items/report_found.html', categories=CATEGORIES, locations=CAMPUS_LOCATIONS)
+
+        if len(description) > 2000:
+            flash("Description cannot exceed 2000 characters.", "danger")
+            return render_template('items/report_found.html', categories=CATEGORIES, locations=CAMPUS_LOCATIONS)
+
         # Handle image upload
         image_filename = None
         if 'image' in request.files:
             file = request.files['image']
-            if file and file.filename and allowed_file(file.filename):
-                safe_name = secure_filename(f"found_{int(datetime.now().timestamp())}_{file.filename}")
-                upload_dir = current_app.config['UPLOAD_FOLDER']
-                os.makedirs(upload_dir, exist_ok=True)
-                file.save(os.path.join(upload_dir, safe_name))
-                image_filename = safe_name
+            if file and file.filename:
+                if allowed_file(file.filename) and is_valid_image_header(file.stream):
+                    safe_name = secure_filename(f"found_{int(datetime.now().timestamp())}_{file.filename}")
+                    upload_dir = current_app.config['UPLOAD_FOLDER']
+                    os.makedirs(upload_dir, exist_ok=True)
+                    file.save(os.path.join(upload_dir, safe_name))
+                    image_filename = safe_name
+                else:
+                    flash("Uploaded file format is not supported (allowed: PNG, JPG, JPEG, GIF, WEBP). Report created without image.", "warning")
 
         item_id = execute_db(
             "INSERT INTO items (user_id, type, title, category, description, location, item_date, image_filename, storage_location, status) "
@@ -305,6 +349,10 @@ def update_status(item_id: int):
     new_status = request.form.get('status')
     if new_status in ('open', 'claimed', 'returned', 'resolved', 'closed'):
         execute_db("UPDATE items SET status = %s WHERE id = %s", (new_status, item_id))
+        # Synchronize status in in-memory BST index
+        node, _ = global_item_index.primary_tree.search(item_id)
+        if node and node.data:
+            node.data['status'] = new_status
         flash(f"Item status successfully updated to '{new_status.capitalize()}'.", "success")
     else:
         flash("Invalid status specified.", "danger")

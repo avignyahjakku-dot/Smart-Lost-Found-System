@@ -5,8 +5,9 @@ Initializes Flask extensions, database schema, blueprints, and BST indexes.
 """
 
 import os
+import secrets
 from datetime import datetime
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request, abort
 from .config import config_by_name, Config
 from .db import close_db, init_db
 from .dsa.bst_service import global_item_index
@@ -39,11 +40,32 @@ def create_app(config_name=None):
     app.register_blueprint(admin_bp)
     app.register_blueprint(dsa_bp)
 
+    # CSRF Protection Generator & Validation
+    def generate_csrf_token():
+        if '_csrf_token' not in session:
+            session['_csrf_token'] = secrets.token_hex(16)
+        return session['_csrf_token']
+
+    @app.before_request
+    def validate_csrf():
+        # Testing environments bypass CSRF validation for programmatic test client requests
+        if app.config.get('TESTING'):
+            return
+        if request.method == 'POST':
+            # Exempt JSON API routes such as /dsa/api/*
+            if request.path.startswith('/dsa/api/'):
+                return
+            token = request.form.get('csrf_token')
+            expected = session.get('_csrf_token')
+            if not expected or not token or not secrets.compare_digest(str(token), str(expected)):
+                abort(400, description="CSRF token validation failed. Please refresh the page and try again.")
+
     # Context processors for global template variables
     @app.context_processor
     def inject_global_template_vars():
         return {
             'now': datetime.now(),
+            'csrf_token': generate_csrf_token,
             'current_user': {
                 'id': session.get('user_id'),
                 'name': session.get('user_name'),
@@ -81,6 +103,11 @@ def create_app(config_name=None):
         return badges.get(str(status).lower(), 'badge-secondary')
 
     # Global HTTP Error Handlers
+    @app.errorhandler(400)
+    def bad_request(e):
+        desc = getattr(e, 'description', "Bad request.")
+        return render_template('base.html', error_code=400, error_message=desc), 400
+
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('base.html', error_code=404, error_message="The requested page could not be found."), 404

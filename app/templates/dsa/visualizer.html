@@ -37,10 +37,10 @@
     </div>
 
     <!-- Operations Input Row -->
-    <div class="controls-row" style="margin-bottom: 1rem;">
+    <div class="controls-row" style="margin-bottom: 0.75rem;">
         <div style="display: flex; gap: 0.5rem; flex: 2; min-width: 260px;">
-            <input type="number" id="input-key" class="form-control" placeholder="Key (e.g. 55)" style="max-width: 130px;">
-            <input type="text" id="input-title" class="form-control" placeholder="Item Label (optional)">
+            <input type="number" id="input-key" class="form-control" placeholder="Key (e.g. 55)" style="max-width: 130px;" aria-label="Numeric BST Key">
+            <input type="text" id="input-title" class="form-control" placeholder="Item Label (optional)" aria-label="Item Label">
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -48,6 +48,9 @@
             <button type="button" id="btn-search" class="btn btn-secondary">🔍 Search Key</button>
             <button type="button" id="btn-delete" class="btn btn-danger">🗑️ Delete Key</button>
         </div>
+    </div>
+    <div class="form-hint" style="margin-bottom: 1rem; color: var(--secondary);">
+        💡 <strong>Tip:</strong> Click any tree node in the canvas below or use <kbd>Tab</kbd> + <kbd>Enter</kbd> to trace the search path and comparison steps in real time.
     </div>
 
     <!-- Traversal Controls -->
@@ -60,8 +63,8 @@
 </div>
 
 <!-- SVG Tree Canvas -->
-<div class="canvas-wrapper" style="margin-bottom: 1.5rem;">
-    <svg id="bst-svg"></svg>
+<div class="canvas-wrapper" style="margin-bottom: 1.5rem;" role="region" aria-label="Binary Search Tree Dynamic Canvas">
+    <svg id="bst-svg" aria-label="Interactive Binary Search Tree Graph"></svg>
 </div>
 
 <!-- Execution Console -->

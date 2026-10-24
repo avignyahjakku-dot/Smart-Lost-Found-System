@@ -74,7 +74,8 @@
                                 </td>
                                 <td>
                                     <form action="{{ url_for('admin.review_claim', claim_id=c.id) }}" method="POST" style="display: flex; flex-direction: column; gap: 0.4rem;">
-                                        <input type="text" name="admin_notes" class="form-control" placeholder="Admin verification remarks..." style="font-size: 0.8rem; padding: 0.3rem 0.5rem;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="text" name="admin_notes" class="form-control" placeholder="Admin verification remarks..." aria-label="Admin verification remarks" style="font-size: 0.8rem; padding: 0.3rem 0.5rem;">
                                         <div style="display: flex; gap: 0.4rem;">
                                             <button type="submit" name="decision" value="approve" class="btn btn-sm btn-success" style="flex: 1;">Approve</button>
                                             <button type="submit" name="decision" value="reject" class="btn btn-sm btn-danger" style="flex: 1;">Reject</button>
@@ -134,7 +135,8 @@
                                 <div style="display: flex; gap: 0.4rem;">
                                     <a href="{{ url_for('items.detail', item_id=item.id) }}" class="btn btn-sm btn-secondary">View</a>
                                     <form action="{{ url_for('admin.delete_item', item_id=item.id) }}" method="POST" style="display: inline;">
-                                        <button type="submit" class="btn btn-sm btn-danger btn-confirm-delete">Delete</button>
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-sm btn-danger btn-confirm-delete" aria-label="Delete item #{{ item.id }}">Delete</button>
                                     </form>
                                 </div>
                             </td>

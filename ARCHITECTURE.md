@@ -2,7 +2,7 @@
 
 > **Project:** Smart Lost & Found System (CampusFind)  
 > **Course:** BTech Computer Science & Engineering Capstone  
-> **Author:** Individual BTech Developer  
+> **Author:** Two-Person BTech CSE Team  
 
 ---
 

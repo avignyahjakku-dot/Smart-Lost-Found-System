@@ -22,7 +22,7 @@ from typing import Dict, Any, List, Optional, Tuple
 STOP_WORDS = {
     'a', 'an', 'the', 'and', 'or', 'in', 'on', 'at', 'to', 'for', 'of', 'with',
     'by', 'my', 'is', 'it', 'was', 'i', 'lost', 'found', 'please', 'help',
-    'item', 'items', 'this', 'that', 'there', 'from', 'near', 'around'
+    'item', 'items', 'this', 'that', 'there', 'from', 'near', 'around', 'none', 'null'
 }
 
 def clean_tokens(text: str) -> set:
@@ -69,8 +69,13 @@ def evaluate_match(lost_item: Dict[str, Any], found_item: Dict[str, Any]) -> Dic
     }
 
     # --- 2. Title and Description Text Overlap (Weight: 35) ---
-    lost_text = f"{lost_item.get('title', '')} {lost_item.get('description', '')}"
-    found_text = f"{found_item.get('title', '')} {found_item.get('description', '')}"
+    lost_title = lost_item.get('title') or ''
+    lost_desc = lost_item.get('description') or ''
+    found_title = found_item.get('title') or ''
+    found_desc = found_item.get('description') or ''
+
+    lost_text = f"{lost_title} {lost_desc}"
+    found_text = f"{found_title} {found_desc}"
 
     lost_tokens = clean_tokens(lost_text)
     found_tokens = clean_tokens(found_text)
@@ -79,8 +84,8 @@ def evaluate_match(lost_item: Dict[str, Any], found_item: Dict[str, Any]) -> Dic
     jaccard = calculate_jaccard_similarity(lost_tokens, found_tokens)
 
     # Title-specific substring boost
-    lost_title_tokens = clean_tokens(lost_item.get('title', ''))
-    found_title_tokens = clean_tokens(found_item.get('title', ''))
+    lost_title_tokens = clean_tokens(lost_title)
+    found_title_tokens = clean_tokens(found_title)
     title_overlap = lost_title_tokens.intersection(found_title_tokens)
 
     text_score = min(35.0, (jaccard * 25.0) + (len(title_overlap) * 5.0) + (len(overlap) * 1.5))

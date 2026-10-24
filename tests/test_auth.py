@@ -124,5 +124,34 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(res_admin.status_code, 200)
         self.assertIn(b"Campus Administration Dashboard", res_admin.data)
 
+    def test_registration_validation_failures(self):
+        """Registration rejects missing fields, mismatched passwords, and oversized names."""
+        # 1. Missing name
+        res_no_name = self.client.post('/register', data={
+            'full_name': '',
+            'email': 'noname@campusfind.edu',
+            'password': 'Password123!',
+            'confirm_password': 'Password123!'
+        }, follow_redirects=True)
+        self.assertIn(b"Please fill in all required fields", res_no_name.data)
+
+        # 2. Password mismatch
+        res_mismatch = self.client.post('/register', data={
+            'full_name': 'Mismatch User',
+            'email': 'mismatch@campusfind.edu',
+            'password': 'Password123!',
+            'confirm_password': 'DifferentPassword456!'
+        }, follow_redirects=True)
+        self.assertIn(b"Passwords do not match", res_mismatch.data)
+
+        # 3. Oversized name (> 100 characters)
+        res_long_name = self.client.post('/register', data={
+            'full_name': 'A' * 105,
+            'email': 'longname@campusfind.edu',
+            'password': 'Password123!',
+            'confirm_password': 'Password123!'
+        }, follow_redirects=True)
+        self.assertIn(b"Full name cannot exceed 100 characters", res_long_name.data)
+
 if __name__ == '__main__':
     unittest.main()

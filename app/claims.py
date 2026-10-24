@@ -24,6 +24,10 @@ def submit_claim(item_id: int):
         flash("You cannot submit an ownership claim on an item you reported.", "warning")
         return redirect(url_for('items.detail', item_id=item_id))
 
+    if item['type'] != 'found':
+        flash("Ownership claims can only be filed for items reported found.", "warning")
+        return redirect(url_for('items.detail', item_id=item_id))
+
     if item['status'] not in ('open', 'claimed'):
         flash(f"This item is marked as '{item['status']}' and is no longer accepting claims.", "warning")
         return redirect(url_for('items.detail', item_id=item_id))
@@ -44,6 +48,14 @@ def submit_claim(item_id: int):
 
     if not proof_details or not contact_phone:
         flash("Please provide identifying proof and your contact phone number.", "danger")
+        return redirect(url_for('items.detail', item_id=item_id))
+
+    if len(contact_phone) > 20:
+        flash("Phone number cannot exceed 20 characters.", "danger")
+        return redirect(url_for('items.detail', item_id=item_id))
+
+    if len(proof_details) > 2000:
+        flash("Proof details cannot exceed 2000 characters.", "danger")
         return redirect(url_for('items.detail', item_id=item_id))
 
     try:
