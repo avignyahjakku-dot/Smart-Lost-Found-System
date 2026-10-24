@@ -2,7 +2,7 @@
 CampusFind - Application Entry Point
 ====================================
 Smart Lost & Found System
-Individual BTech CSE Capstone Project
+Two-Person BTech CSE Capstone Project
 """
 
 import os
@@ -15,5 +15,5 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     # Never allow debug mode in production environment
     debug = (env_name != 'production') and (os.environ.get('FLASK_DEBUG', '1') == '1')
-    print(f"🚀 Starting CampusFind on http://127.0.0.1:{port} (Debug={debug})")
+    print(f">> Starting CampusFind on http://127.0.0.1:{port} (Debug={debug})")
     app.run(host='127.0.0.1', port=port, debug=debug)
