@@ -1,0 +1,148 @@
+/* ==========================================================================
+   BST Visualizer Stylesheet
+   ========================================================================== */
+
+.visualizer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.canvas-wrapper {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: auto;
+  min-height: 460px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+#bst-svg {
+  width: 100%;
+  height: 520px;
+  display: block;
+}
+
+/* SVG Elements */
+.bst-branch {
+  stroke: #cbd5e1;
+  stroke-width: 2.5;
+  transition: stroke 0.3s ease;
+}
+
+.bst-branch.branch-active {
+  stroke: #2563eb;
+  stroke-width: 3.5;
+}
+
+.bst-node {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.bst-node:hover {
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+}
+
+.node-circle {
+  fill: #ffffff;
+  stroke: #2563eb;
+  stroke-width: 2.5;
+  transition: all 0.35s ease;
+}
+
+.node-text {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  fill: #1e293b;
+  text-anchor: middle;
+  dominant-baseline: central;
+  user-select: none;
+}
+
+.node-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  fill: #64748b;
+  text-anchor: middle;
+}
+
+/* Animation States */
+.node-circle.state-visited {
+  fill: #fef08a !important;
+  stroke: #ca8a04 !important;
+  stroke-width: 3.5;
+  animation: pulse 0.5s ease-in-out;
+}
+
+.node-circle.state-found {
+  fill: #bbf7d0 !important;
+  stroke: #16a34a !important;
+  stroke-width: 4;
+}
+
+.node-circle.state-delete {
+  fill: #fecaca !important;
+  stroke: #dc2626 !important;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Console & Controls */
+.controls-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.controls-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.log-box {
+  background: #0f172a;
+  color: #38bdf8;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.85rem;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  height: 140px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.log-line {
+  margin-bottom: 0.25rem;
+}
+
+.log-time {
+  color: #64748b;
+  margin-right: 0.5rem;
+}
+
+.metric-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f1f5f9;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--secondary);
+}

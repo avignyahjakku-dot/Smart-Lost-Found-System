@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Matching Hub — CampusFind{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+        <span class="badge" style="background: #e0e7ff; color: #4338ca;">Heuristic Matching Engine</span>
+    </div>
+    <h1 style="font-size: 1.8rem; color: var(--dark);">Campus Smart Matching Hub</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Automated multi-factor similarity analysis linking active lost and found reports across the university.
+    </p>
+</div>
+
+<!-- Algorithm Explanation Card -->
+<div class="card" style="margin-bottom: 2rem; background: #fafbfc; border-left: 4px solid var(--primary);">
+    <div class="card-body">
+        <h3 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--dark);">🧠 How the Matching Scoring Algorithm Operates:</h3>
+        <div class="grid grid-4" style="gap: 1rem; font-size: 0.85rem;">
+            <div style="background: #ffffff; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border);">
+                <strong>1. Category Match (30%)</strong>
+                <p style="color: var(--text-muted); margin-top: 0.2rem;">Strict matching between reported classifications.</p>
+            </div>
+            <div style="background: #ffffff; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border);">
+                <strong>2. Text Similarity (35%)</strong>
+                <p style="color: var(--text-muted); margin-top: 0.2rem;">Tokenized Jaccard overlap on titles & descriptions.</p>
+            </div>
+            <div style="background: #ffffff; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border);">
+                <strong>3. Location Proximity (20%)</strong>
+                <p style="color: var(--text-muted); margin-top: 0.2rem;">Zone and campus landmark compatibility.</p>
+            </div>
+            <div style="background: #ffffff; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border);">
+                <strong>4. Timeline Plausibility (15%)</strong>
+                <p style="color: var(--text-muted); margin-top: 0.2rem;">Ensures found date occurs on or after lost date.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+    <span style="font-size: 0.95rem; font-weight: 600; color: var(--secondary);">
+        Active Algorithmic Matches: {{ matches | length }}
+    </span>
+</div>
+
+<!-- Matches List -->
+{% if matches %}
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        {% for m in matches %}
+            <div class="card" style="border: 1px solid var(--border);">
+                <div class="card-header" style="background: #ffffff;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                        <span class="badge confidence-{{ m.tier | lower }}" style="font-size: 0.85rem; padding: 0.35rem 0.75rem;">
+                            {{ m.tier }} Confidence Match
+                        </span>
+                        <strong style="font-size: 1.25rem; color: var(--dark);">{{ m.total_score }}% Overall Similarity</strong>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">
+                        {{ m.summary }}
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Side-by-Side Comparison -->
+                    <div class="grid grid-2" style="gap: 1.5rem; margin-bottom: 1.25rem;">
+                        <!-- Lost Item Side -->
+                        <div style="background: #fff5f5; border: 1px solid #fed7d7; border-radius: var(--radius-sm); padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span class="badge badge-lost">Reported Lost (Item #{{ m.lost_item.id }})</span>
+                                <span style="font-size: 0.8rem; color: #9b2c2c;">Lost on {{ m.lost_item.item_date | format_date }}</span>
+                            </div>
+                            <h4 style="font-size: 1.1rem; color: #742a2a; margin-bottom: 0.35rem;">
+                                <a href="{{ url_for('items.detail', item_id=m.lost_item.id) }}" style="color: inherit;">{{ m.lost_item.title }}</a>
+                            </h4>
+                            <div style="font-size: 0.85rem; color: #9b2c2c; margin-bottom: 0.5rem;">
+                                📍 {{ m.lost_item.location }} &bull; Category: {{ m.lost_item.category }}
+                            </div>
+                            <p style="font-size: 0.85rem; color: #4a5568;">{{ m.lost_item.description }}</p>
+                        </div>
+
+                        <!-- Found Item Side -->
+                        <div style="background: #f0fff4; border: 1px solid #c6f6d5; border-radius: var(--radius-sm); padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span class="badge badge-found">Reported Found (Item #{{ m.found_item.id }})</span>
+                                <span style="font-size: 0.8rem; color: #22543d;">Found on {{ m.found_item.item_date | format_date }}</span>
+                            </div>
+                            <h4 style="font-size: 1.1rem; color: #1c4532; margin-bottom: 0.35rem;">
+                                <a href="{{ url_for('items.detail', item_id=m.found_item.id) }}" style="color: inherit;">{{ m.found_item.title }}</a>
+                            </h4>
+                            <div style="font-size: 0.85rem; color: #22543d; margin-bottom: 0.5rem;">
+                                📍 {{ m.found_item.location }} &bull; Held at: <strong>{{ m.found_item.storage_location or 'Campus Desk' }}</strong>
+                            </div>
+                            <p style="font-size: 0.85rem; color: #4a5568;">{{ m.found_item.description }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Factor-by-Factor Scoring Breakdown -->
+                    <div style="background: #f8fafc; padding: 0.85rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; border: 1px solid var(--border);">
+                        <strong style="color: var(--dark); display: block; margin-bottom: 0.4rem;">Scoring Justification:</strong>
+                        <div class="grid grid-2" style="gap: 0.5rem;">
+                            <div>&bull; <strong>Category:</strong> {{ m.breakdown.category.reason }} ({{ m.breakdown.category.earned }}/{{ m.breakdown.category.weight }} pts)</div>
+                            <div>&bull; <strong>Text:</strong> {{ m.breakdown.text.reason }} ({{ m.breakdown.text.earned }}/{{ m.breakdown.text.weight }} pts)</div>
+                            <div>&bull; <strong>Location:</strong> {{ m.breakdown.location.reason }} ({{ m.breakdown.location.earned }}/{{ m.breakdown.location.weight }} pts)</div>
+                            <div>&bull; <strong>Timeline:</strong> {{ m.breakdown.date.reason }} ({{ m.breakdown.date.earned }}/{{ m.breakdown.date.weight }} pts)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer" style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                    <a href="{{ url_for('items.detail', item_id=m.lost_item.id) }}" class="btn btn-sm btn-secondary">Inspect Lost Report</a>
+                    <a href="{{ url_for('items.detail', item_id=m.found_item.id) }}" class="btn btn-sm btn-primary">Review & Claim Found Item &rarr;</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 4rem 1.5rem; color: var(--text-muted);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--dark);">No candidate matches currently active</h3>
+        <p style="max-width: 500px; margin: 0 auto;">
+            The system continuously compares newly submitted lost and found reports. When attributes align, they will appear here.
+        </p>
+    </div>
+{% endif %}
+{% endblock %}

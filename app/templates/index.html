@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}CampusFind — Smart University Lost & Found System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <h1>Recover What Matters on Campus</h1>
+    <p>
+        An intelligent campus-wide platform integrating heuristic matching algorithms
+        and real-time binary search tree indexing to reunite students and staff with misplaced belongings.
+    </p>
+    <div class="hero-actions">
+        <a href="{{ url_for('items.report_lost') }}" class="btn btn-lg btn-danger">📢 Report Lost Item</a>
+        <a href="{{ url_for('items.report_found') }}" class="btn btn-lg btn-success">🎁 Report Found Item</a>
+        <a href="{{ url_for('items.browse') }}" class="btn btn-lg btn-secondary">🔍 Browse All Items</a>
+    </div>
+</section>
+
+<!-- System Statistics Counters -->
+<section style="margin-bottom: 2.5rem;">
+    <div class="grid grid-4">
+        <div class="stat-card">
+            <div class="stat-num">{{ stats.total_items }}</div>
+            <div class="stat-label">Total Reports Logged</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num" style="color: var(--danger);">{{ stats.lost_count }}</div>
+            <div class="stat-label">Active Lost Items</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num" style="color: var(--success);">{{ stats.found_count }}</div>
+            <div class="stat-label">Active Found Items</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num" style="color: var(--info);">{{ stats.resolved_count }}</div>
+            <div class="stat-label">Successfully Resolved</div>
+        </div>
+    </div>
+</section>
+
+<!-- Fast Quick Search Bar -->
+<section style="margin-bottom: 3rem;">
+    <div class="card" style="padding: 1.25rem;">
+        <form action="{{ url_for('items.browse') }}" method="GET" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <input type="text" name="q" class="form-control" style="flex: 2; min-width: 240px;" placeholder="Search lost or found items (e.g. Dell laptop, Student ID, blue bottle)...">
+            <select name="type" class="form-control" style="flex: 1; min-width: 140px;">
+                <option value="all">All Item Types</option>
+                <option value="lost">Lost Only</option>
+                <option value="found">Found Only</option>
+            </select>
+            <button type="submit" class="btn btn-primary" style="flex: 0 0 auto;">Search Repository</button>
+        </form>
+    </div>
+</section>
+
+<!-- Recent Lost Items Section -->
+<section style="margin-bottom: 3rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem;">
+        <div>
+            <h2 style="font-size: 1.4rem; color: var(--dark);">Recent Lost Item Reports</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Items recently reported missing by students or staff.</p>
+        </div>
+        <a href="{{ url_for('items.browse', type='lost') }}" style="font-weight: 600;">View All Lost &rarr;</a>
+    </div>
+
+    {% if recent_lost %}
+        <div class="grid grid-3">
+            {% for item in recent_lost %}
+                <div class="card item-card">
+                    <div class="item-thumb">
+                        {% if item.image_filename %}
+                            <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.title }}">
+                        {% else %}
+                            <div class="item-thumb-placeholder">💼</div>
+                        {% endif %}
+                        <span class="badge badge-lost item-type-tag">Lost</span>
+                        <span class="item-date-tag">{{ item.item_date | format_date }}</span>
+                    </div>
+                    <div class="card-body">
+                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">{{ item.category }}</span>
+                        <h3 style="font-size: 1.1rem; margin: 0.25rem 0 0.5rem 0; color: var(--dark);">{{ item.title }}</h3>
+                        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.75rem;">
+                            📍 {{ item.location }}
+                        </p>
+                        <p style="font-size: 0.85rem; color: #475569; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ item.description }}
+                        </p>
+                    </div>
+                    <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">By {{ item.reporter_name }}</span>
+                        <a href="{{ url_for('items.detail', item_id=item.id) }}" class="btn btn-sm btn-secondary">Inspect Details &rarr;</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            No open lost items currently reported.
+        </div>
+    {% endif %}
+</section>
+
+<!-- Recent Found Items Section -->
+<section style="margin-bottom: 3.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem;">
+        <div>
+            <h2 style="font-size: 1.4rem; color: var(--dark);">Recent Found Items Held in Custody</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Turned in to campus desks awaiting owner recovery.</p>
+        </div>
+        <a href="{{ url_for('items.browse', type='found') }}" style="font-weight: 600;">View All Found &rarr;</a>
+    </div>
+
+    {% if recent_found %}
+        <div class="grid grid-3">
+            {% for item in recent_found %}
+                <div class="card item-card">
+                    <div class="item-thumb">
+                        {% if item.image_filename %}
+                            <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.title }}">
+                        {% else %}
+                            <div class="item-thumb-placeholder">📦</div>
+                        {% endif %}
+                        <span class="badge badge-found item-type-tag">Found</span>
+                        <span class="item-date-tag">{{ item.item_date | format_date }}</span>
+                    </div>
+                    <div class="card-body">
+                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--success);">{{ item.category }}</span>
+                        <h3 style="font-size: 1.1rem; margin: 0.25rem 0 0.5rem 0; color: var(--dark);">{{ item.title }}</h3>
+                        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.75rem;">
+                            📍 Found at: {{ item.location }}
+                        </p>
+                        {% if item.storage_location %}
+                            <p style="font-size: 0.82rem; color: #047857; background: #ecfdf5; padding: 0.25rem 0.5rem; border-radius: 4px; margin-bottom: 0.75rem;">
+                                🏢 Held at: <strong>{{ item.storage_location }}</strong>
+                            </p>
+                        {% endif %}
+                        <p style="font-size: 0.85rem; color: #475569; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ item.description }}
+                        </p>
+                    </div>
+                    <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Logged by {{ item.reporter_name }}</span>
+                        <a href="{{ url_for('items.detail', item_id=item.id) }}" class="btn btn-sm btn-secondary">Claim Item &rarr;</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            No open found items currently awaiting collection.
+        </div>
+    {% endif %}
+</section>
+
+<!-- Educational & Technical Architecture Panel -->
+<section style="margin-bottom: 2rem;">
+    <div class="card" style="border-left: 4px solid var(--primary); padding: 1.5rem;">
+        <h3 style="font-size: 1.2rem; color: var(--dark); margin-bottom: 0.5rem;">⚙️ System Engineering & DSA Rationale</h3>
+        <p style="color: var(--secondary); font-size: 0.95rem; margin-bottom: 1rem;">
+            CampusFind combines a robust relational backend with a custom in-memory <strong>Binary Search Tree (BST)</strong>.
+            While MySQL provides ACID persistence and B-Tree disk indexes, our in-memory BST implements $O(\log n)$ ordered ID and chronological lookups,
+            accompanied by an interactive educational visualizer demonstrating node insertion, search path traces, and three-case deletions.
+        </p>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{{ url_for('dsa.visualizer') }}" class="btn btn-sm btn-primary">Open BST Visualizer &rarr;</a>
+            <a href="{{ url_for('items.matching_hub') }}" class="btn btn-sm btn-secondary">Explore Smart Matching Hub &rarr;</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

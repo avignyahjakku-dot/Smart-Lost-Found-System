@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Lost & Found Catalog — CampusFind{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <h1 style="font-size: 1.8rem; color: var(--dark); margin-bottom: 0.25rem;">Campus Repository Catalog</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Filter, search, and track all reported lost and found belongings.</p>
+</div>
+
+<!-- Filter and Search Controls -->
+<div class="card" style="margin-bottom: 2rem; padding: 1.25rem;">
+    <form action="{{ url_for('items.browse') }}" method="GET">
+        <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap;">
+            <input type="text" name="q" class="form-control" style="flex: 2; min-width: 220px;" placeholder="Search keywords in title, description, or campus location..." value="{{ current_filters.q }}">
+            <button type="submit" class="btn btn-primary" style="flex: 0 0 auto;">Filter Results</button>
+            <a href="{{ url_for('items.browse') }}" class="btn btn-secondary" style="flex: 0 0 auto;">Reset</a>
+        </div>
+
+        <div class="grid grid-4" style="gap: 0.75rem;">
+            <div>
+                <label class="form-label" style="font-size: 0.8rem;">Item Type</label>
+                <select name="type" class="form-control" onchange="this.form.submit()">
+                    <option value="all" {% if current_filters.type == 'all' %}selected{% endif %}>All Types (Lost & Found)</option>
+                    <option value="lost" {% if current_filters.type == 'lost' %}selected{% endif %}>Lost Items Only</option>
+                    <option value="found" {% if current_filters.type == 'found' %}selected{% endif %}>Found Items Only</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="form-label" style="font-size: 0.8rem;">Category</label>
+                <select name="category" class="form-control" onchange="this.form.submit()">
+                    <option value="all">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat }}" {% if current_filters.category == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label class="form-label" style="font-size: 0.8rem;">Campus Location</label>
+                <select name="location" class="form-control" onchange="this.form.submit()">
+                    <option value="all">All Locations</option>
+                    {% for loc in locations %}
+                        <option value="{{ loc }}" {% if current_filters.location == loc %}selected{% endif %}>{{ loc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label class="form-label" style="font-size: 0.8rem;">Sort Order</label>
+                <select name="sort" class="form-control" onchange="this.form.submit()">
+                    <option value="newest" {% if current_filters.sort == 'newest' %}selected{% endif %}>Newest First</option>
+                    <option value="oldest" {% if current_filters.sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Item Count Header -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+    <span style="font-size: 0.95rem; font-weight: 600; color: var(--secondary);">
+        Found {{ items | length }} matching record{{ 's' if items | length != 1 else '' }}
+    </span>
+</div>
+
+<!-- Items Grid -->
+{% if items %}
+    <div class="grid grid-3">
+        {% for item in items %}
+            <div class="card item-card">
+                <div class="item-thumb">
+                    {% if item.image_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.title }}">
+                    {% else %}
+                        <div class="item-thumb-placeholder">
+                            {{ '💼' if item.type == 'lost' else '📦' }}
+                        </div>
+                    {% endif %}
+                    <span class="badge {{ 'badge-lost' if item.type == 'lost' else 'badge-found' }} item-type-tag">
+                        {{ item.type | upper }}
+                    </span>
+                    <span class="item-date-tag">{{ item.item_date | format_date }}</span>
+                </div>
+
+                <div class="card-body">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">
+                            {{ item.category }}
+                        </span>
+                        <span class="badge {{ item.status | badge_status }}">{{ item.status }}</span>
+                    </div>
+
+                    <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--dark);">
+                        <a href="{{ url_for('items.detail', item_id=item.id) }}">{{ item.title }}</a>
+                    </h3>
+
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.5rem;">
+                        📍 {{ item.location }}
+                    </p>
+
+                    <p style="font-size: 0.85rem; color: #475569; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.5rem;">
+                        {{ item.description }}
+                    </p>
+
+                    {% if item.storage_location %}
+                        <div style="font-size: 0.8rem; color: #047857; background: #ecfdf5; padding: 0.2rem 0.4rem; border-radius: 4px;">
+                            Held at: {{ item.storage_location }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">
+                        ID: #{{ item.id }}
+                    </span>
+                    <a href="{{ url_for('items.detail', item_id=item.id) }}" class="btn btn-sm btn-primary">
+                        View Details &rarr;
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 4rem 1.5rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🔎</div>
+        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--dark);">No items matched your current filter</h3>
+        <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 1.5rem auto;">
+            Try clearing filters or search terms. If you lost or found something, you can submit a report right now.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 0.75rem;">
+            <a href="{{ url_for('items.browse') }}" class="btn btn-secondary">Clear All Filters</a>
+            <a href="{{ url_for('items.report_lost') }}" class="btn btn-danger">+ Report Lost</a>
+            <a href="{{ url_for('items.report_found') }}" class="btn btn-success">+ Report Found</a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

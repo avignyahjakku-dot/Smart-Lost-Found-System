@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Report Found Item — CampusFind{% endblock %}
+
+{% block content %}
+<div style="max-width: 680px; margin: 2rem auto;">
+    <div class="card">
+        <div class="card-header" style="display: block; padding: 1.5rem 1.25rem 1rem 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                <span class="badge badge-found">Found Item Report</span>
+            </div>
+            <h2 style="font-size: 1.5rem; color: var(--dark);">Report a Misplaced Item Found on Campus</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">
+                Help return this item to its rightful owner by recording where it was discovered and where it is currently held.
+            </p>
+        </div>
+
+        <div class="card-body">
+            <form action="{{ url_for('items.report_found') }}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label" for="title">Item Name / Title <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Blue Casio Scientific Calculator FX-991EX" required autofocus>
+                </div>
+
+                <div class="grid grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="category">Category <span class="required">*</span></label>
+                        <select id="category" name="category" class="form-control" required>
+                            <option value="">Select Category...</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat }}">{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="location">Found Location <span class="required">*</span></label>
+                        <select id="location" name="location" class="form-control" required>
+                            <option value="">Select Campus Location...</option>
+                            {% for loc in locations %}
+                                <option value="{{ loc }}">{{ loc }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="item_date">Date Found <span class="required">*</span></label>
+                        <input type="date" id="item_date" name="item_date" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="image">Photo of the Found Item</label>
+                        <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="storage_location">Current Storage / Custody Location <span class="required">*</span></label>
+                    <input type="text" id="storage_location" name="storage_location" class="form-control" placeholder="e.g. Central Library Front Desk or Main Security Office Gate 1" required>
+                    <div class="form-hint">Tell the owner where they can physically pick up or verify this item.</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="description">Item Description & Condition <span class="required">*</span></label>
+                    <textarea id="description" name="description" class="form-control" rows="4" placeholder="Describe general appearance, visible brand, color, condition..." required></textarea>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <a href="{{ url_for('items.browse') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-success">Submit Found Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

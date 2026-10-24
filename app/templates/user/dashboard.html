@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}My Activity — CampusFind{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 1.8rem; color: var(--dark);">My Campus Activity</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Track your reported lost & found items and check claim statuses.</p>
+        </div>
+        <div style="display: flex; gap: 0.6rem;">
+            <a href="{{ url_for('items.report_lost') }}" class="btn btn-sm btn-danger">+ Report Lost</a>
+            <a href="{{ url_for('items.report_found') }}" class="btn btn-sm btn-success">+ Report Found</a>
+        </div>
+    </div>
+</div>
+
+<!-- Section 1: My Submitted Claims -->
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+        <h2 class="card-title">✋ My Ownership Claims ({{ claims | length }})</h2>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        {% if claims %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Claim ID</th>
+                            <th>Target Item</th>
+                            <th>Location</th>
+                            <th>Submitted On</th>
+                            <th>Status</th>
+                            <th>Admin Review Remarks</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in claims %}
+                            <tr>
+                                <td>#{{ c.id }}</td>
+                                <td>
+                                    <strong>{{ c.item_title }}</strong>
+                                </td>
+                                <td>📍 {{ c.item_location }}</td>
+                                <td>{{ c.created_at | format_date }}</td>
+                                <td>
+                                    <span class="badge {{ c.status | badge_status }}">{{ c.status | upper }}</span>
+                                </td>
+                                <td>
+                                    {% if c.admin_notes %}
+                                        <span style="font-size: 0.85rem; color: var(--dark);">"{{ c.admin_notes }}"</span>
+                                    {% else %}
+                                        <span style="color: var(--text-muted); font-size: 0.82rem;">Under Review</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('items.detail', item_id=c.item_id) }}" class="btn btn-sm btn-secondary">View Item</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                You haven't submitted any ownership claims yet.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Section 2: Items I Reported Lost -->
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+        <h2 class="card-title">📢 Lost Items I Reported ({{ lost_items | length }})</h2>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        {% if lost_items %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Title & Category</th>
+                            <th>Location Lost</th>
+                            <th>Date Lost</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in lost_items %}
+                            <tr>
+                                <td>#{{ item.id }}</td>
+                                <td>
+                                    <strong>{{ item.title }}</strong><br>
+                                    <span style="font-size: 0.78rem; color: var(--text-muted);">{{ item.category }}</span>
+                                </td>
+                                <td>📍 {{ item.location }}</td>
+                                <td>{{ item.item_date | format_date }}</td>
+                                <td>
+                                    <span class="badge {{ item.status | badge_status }}">{{ item.status }}</span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('items.detail', item_id=item.id) }}" class="btn btn-sm btn-secondary">View & Matches</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                You have not reported any lost items.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Section 3: Items I Reported Found -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">🎁 Found Items I Reported ({{ found_items | length }})</h2>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        {% if found_items %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Title & Category</th>
+                            <th>Found Location</th>
+                            <th>Current Custody Desk</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in found_items %}
+                            <tr>
+                                <td>#{{ item.id }}</td>
+                                <td>
+                                    <strong>{{ item.title }}</strong><br>
+                                    <span style="font-size: 0.78rem; color: var(--text-muted);">{{ item.category }}</span>
+                                </td>
+                                <td>📍 {{ item.location }}</td>
+                                <td>🏢 {{ item.storage_location or 'N/A' }}</td>
+                                <td>
+                                    <span class="badge {{ item.status | badge_status }}">{{ item.status }}</span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('items.detail', item_id=item.id) }}" class="btn btn-sm btn-secondary">View Details</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                You have not logged any found items.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
