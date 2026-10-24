@@ -38,6 +38,15 @@ venv.bak/
 *.sqlite
 *.sqlite3
 campusfind.db
+test_campusfind.db
+
+# Logs & monitoring
+*.log
+
+# Test & coverage caches
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Uploads
 app/static/uploads/*
