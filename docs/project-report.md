@@ -1,7 +1,6 @@
-# SYMBIOSIS INSTITUTE OF TECHNOLOGY, HYDERABAD
-### Constituent of Symbiosis International (Deemed University), Pune
-*(Established under Section 3 of the UGC Act of 1956 vide notification number F.9-12/2001-U.3 of the Government of India)*  
-**Re-Accredited by NAAC with 'A++' Grade**
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
 
 <br>
 
@@ -37,6 +36,10 @@
 
 ---
 
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
+
 # INDEX
 
 | S.No. | Chapter / Topic | Page No. |
@@ -55,6 +58,10 @@
 <div style="page-break-after: always;"></div>
 
 ---
+
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
 
 # ACKNOWLEDGEMENT
 
@@ -80,6 +87,10 @@ Finally, we express our gratitude to our peers and classmates for their valuable
 
 ---
 
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
+
 # ABSTRACT AND INTRODUCTION
 
 ### Abstract
@@ -99,6 +110,10 @@ Every academic semester, thousands of personal items—ranging from student iden
 <div style="page-break-after: always;"></div>
 
 ---
+
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
 
 # METHODOLOGY
 
@@ -146,6 +161,10 @@ The development and execution of CampusFind follows a structured, six-stage engi
 <div style="page-break-after: always;"></div>
 
 ---
+
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
 
 # BINARY SEARCH TREE (BST) ARCHITECTURE & THEORETICAL FOUNDATIONS
 
@@ -196,6 +215,10 @@ $$\text{Time Complexity:} \quad O(n), \quad \text{Space Complexity:} \quad O(h) 
 <div style="page-break-after: always;"></div>
 
 ---
+
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
 
 # MULTI-FACTOR HEURISTIC MATCHING ENGINE & STATE TRANSITIONS
 
@@ -257,9 +280,13 @@ Analogous to a finite stochastic state process, every item report transitions th
 
 ---
 
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
+
 # COMPARATIVE ANALYSIS: IN-MEMORY BST VS. RELATIONAL B-TREE INDEXING
 
-A central technical theme of CampusFind is the deliberate coexistence of an in-memory Binary Search Tree alongside persistent database storage. The table below presents an algorithmic and systems-level comparison:
+A central technical theme of CampusFind is the deliberate coexistence of an in-memory Binary Search Tree alongside persistent database storage:
 
 | Evaluation Dimension | In-Memory Binary Search Tree (`app/dsa/bst.py`) | Relational Database B-Tree Index (MySQL / SQLite) |
 | :--- | :--- | :--- |
@@ -280,6 +307,10 @@ In production environments, relational databases efficiently manage gigabytes of
 <div style="page-break-after: always;"></div>
 
 ---
+
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
 
 # APPLICATIONS AND FUTURE SCOPE
 
@@ -313,6 +344,10 @@ In production environments, relational databases efficiently manage gigabytes of
 
 ---
 
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
+
 # SYSTEM PROTOTYPE WALKTHROUGH — PART I
 
 ```
@@ -339,7 +374,9 @@ In production environments, relational databases efficiently manage gigabytes of
 ```
 *(Figure 1: Interactive In-Memory Binary Search Tree Visualizer showing dynamic SVG node rendering)*
 
-*(it involves a hierarchical tree of nodes representing campus item IDs)*
+*(this is a basic prototype of the website)*
+
+*(it involves a series of item nodes indexed in logarithmic hierarchy)*
 
 *(tree operations like insertion, search, and deletion execute in $O(\log n)$ average time)*
 
@@ -373,6 +410,10 @@ In production environments, relational databases efficiently manage gigabytes of
 <div style="page-break-after: always;"></div>
 
 ---
+
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
 
 # SYSTEM PROTOTYPE WALKTHROUGH — PART II
 
@@ -435,6 +476,10 @@ In production environments, relational databases efficiently manage gigabytes of
 <div style="page-break-after: always;"></div>
 
 ---
+
+<p align="center">
+  <img src="images/sit_header.png" alt="Symbiosis Institute of Technology, Hyderabad" width="100%" />
+</p>
 
 # SYSTEM PROTOTYPE WALKTHROUGH — PART III
 
